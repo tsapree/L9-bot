@@ -2,3 +2,4 @@
 
 Local Run:
  - mvn clear install spring-boot:run
+ - environments: botToken=<botToken>
