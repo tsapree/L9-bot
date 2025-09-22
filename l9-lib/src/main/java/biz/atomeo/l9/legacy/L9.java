@@ -5,7 +5,6 @@
 * Copyright (c) 1996-2011 Glen Summers and contributors.
 * Contributions from David Kinder, Alan Staniforth, Simon Baldwin,
 * Dieter Baron and Andreas Scherrer.
-
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -49,7 +48,9 @@ package biz.atomeo.l9.legacy;
 //if (var) -> if(var!=0)
 //*getvar()->workspace.vartable[getvar()]&0xffff
 
-public class L9 {
+import static biz.atomeo.l9.legacy.L9Utils.*;
+
+abstract public class L9 {
 	
 	public static final int LISTAREASIZE = 0x800;
 	public static final int STACKSIZE = 1024;
@@ -224,7 +225,7 @@ GFX_V3C          320 x 96             no
 	//	0x15,0x5d,252,-0x3e70, 0x0000,-0x3d30,-0x3ca0, 0x0100,0x4120,-0x3b9d,0x3988, /* Lords of Time */
 	//	0x15,0x6c,284,-0x00f0, 0x0000,-0x0050,-0x0050,-0x0050,0x0300, 0x1930,0x3c17, /* Snowball */
 	//};
-	int L9V1Games[][] =
+	int[][] L9V1Games =
 	{
 		{0x1a,0x24,301, 0x0000,-0x004b, 0x0080,-0x002b, 0x00d0,0x03b0, 0x0f80,0x4857}, /* Colossal Adventure */
 		{0x20,0x3b,283,-0x0583, 0x0000,-0x0508,-0x04e0, 0x0000,0x0800, 0x1000,0x39d1}, /* Adventure Quest */
@@ -341,17 +342,17 @@ GFX_V3C          320 x 96             no
 		ramsavearea=new SaveStruct[RAMSAVESLOTS];
 		for (int i=0;i<RAMSAVESLOTS;i++) {
 			ramsavearea[i]=new SaveStruct();
-		};
+		}
 		GfxScaleStack=new int [GFXSTACKSIZE];
 		GfxA5Stack=new int [GFXSTACKSIZE];
 		
 		FirstLine=new char [FIRSTLINESIZE];
-	};
+	}
 
 	private void initdict(int ptr) {
 		dictptr=ptr;
 		unpackcount=8;
-	};
+	}
 
 	//unpack from this form: 00000111 11222223 33334444 45555566 66677777
 	private int getdictionarycode() {
@@ -468,8 +469,7 @@ GFX_V3C          320 x 96             no
 		
 		d5=(Off>>12)&7;
 		Off&=0xfff;
-		if (Off<0xf80)
-		{
+		if (Off<0xf80) {
 		// dwr01 
 			int a0,oPtr,a3;
 			int d0,d2,i;
@@ -483,18 +483,14 @@ GFX_V3C          320 x 96             no
 
 		// dwr02 
 			oPtr=a0;
-			while (d2!=0 && Off >= L9WORD(a0+2))
-			{
+			while (d2!=0 && Off >= L9WORD(a0+2)) {
 				a0+=4;
 				d2--;
 			}
 		// dwr04 
-			if (a0==oPtr)
-			{
+			if (a0==oPtr) {
 				a0=defdict;
-			}
-			else
-			{
+			} else {
 				a0-=4;
 				Off-=L9WORD(a0+2);
 				a0=startdata+L9WORD(a0);
@@ -505,18 +501,14 @@ GFX_V3C          320 x 96             no
 			a3=0; // a3 not set in original, prevent possible spam 
 
 			// dwr05 
-			while (true)
-			{
+			while (true) {
 				d0=getdictionarycode();
-				if (d0<0x1c)
-				{
+				if (d0<0x1c) {
 					// dwr06 
 					if (d0>=0x1a) d0=getlongcode();
 					else d0+=0x61;
 					threechars[a3++]=(byte)(d0&0xff);
-				}
-				else
-				{
+				} else {
 					d0&=3;
 					a3=d0;
 					if (--Off==0) break;
@@ -525,8 +517,7 @@ GFX_V3C          320 x 96             no
 			for (i=0;i<d0;i++) printautocase(threechars[i]);
 
 			// dwr10 
-			while (true)
-			{
+			while (true) {
 				d0=getdictionarycode();
 				if (d0>=0x1b) return;
 				printautocase(getdictionary(d0));
@@ -540,7 +531,7 @@ GFX_V3C          320 x 96             no
 		}
 	}
 
-    private int getmdlength(int Ptr[]) {
+    private int getmdlength(int[] Ptr) {
 		int tot=0,len;
 		do {
 			len=((l9memory[Ptr[0]++]&0xff) -1) & 0x3f;
@@ -558,12 +549,10 @@ GFX_V3C          320 x 96             no
 
 		while (Msg>0 && Msgptr[0]-endmd<=0) {
 			Data=l9memory[Msgptr[0]]&0xff;
-			if ((Data&128)!=0)
-			{
+			if ((Data&128)!=0) {
 				Msgptr[0]++;
 				Msg-=Data&0x7f;
-			}
-			else {
+			} else {
 				len=getmdlength(Msgptr);
 				Msgptr[0]+=len;
 			}
@@ -577,14 +566,11 @@ GFX_V3C          320 x 96             no
 		while (len!=0) {
 			Data=l9memory[Msgptr[0]++]&0xff;
 			len--;
-			if ((Data&128)!=0)
-			{
+			if ((Data&128)!=0) {
 			// long form (reverse word)
 				Off=(Data<<8) + (l9memory[Msgptr[0]++]&0xff);
 				len--;
-			}
-			else
-			{
+			} else {
 				Off=(l9memory[wordtable+Data*2]<<8) + (l9memory[wordtable+Data*2+1]&0xff);
 			}
 			if (Off==0x8f80) break;
@@ -662,8 +648,7 @@ GFX_V3C          320 x 96             no
 		int n;
 		int a;
 		if (msg==0) return false;
-		while (--msg!=0)
-		{
+		while (--msg!=0) {
 			ptr+=msglenV2(ptr);
 		}
 		if (ptr >= startdata+datasize) return false;
@@ -729,8 +714,7 @@ GFX_V3C          320 x 96             no
 			//long w=0,c=0;
 			int w[]={0};
 			int c[]={0};
-			if (amessageV2(startmd,i,w,c))
-			{
+			if (amessageV2(startmd,i,w,c)) {
 				words+=w[0];
 				chars+=c[0];
 			}
@@ -1046,24 +1030,19 @@ GFX_V3C          320 x 96             no
 			//Chk[i+n] = 0 +...+ i+n-1
 			//Chk[i+n] - Chk[i] = i + ... + i+n
 	
-			if (num>0x2000 && i+num<=filesize && Chk[i+num]==Chk[i])
-			{
+			if (num>0x2000 && i+num<=filesize && Chk[i+num]==Chk[i]) {
 				md=L9WORD(i+0x2);
 				ml=L9WORD(i+0x4);
 				dd=L9WORD(i+0xa);
 				dl=L9WORD(i+0xc);
 	
-				if (ml>0 && md>0 && i+md+ml<=filesize && dd>0 && dl>0 && i+dd+dl*4<=filesize)
-				{
+				if (ml>0 && md>0 && i+md+ml<=filesize && dd>0 && dl>0 && i+dd+dl*4<=filesize) {
 					// v4 files may have acodeptr in 8000-9000, need to fix 
-					for (j=0;j<12;j++)
-					{
+					for (j=0;j<12;j++) {
 						d0=L9WORD (i+0x12 + j*2);
-						if (j!=11 && d0>=0x8000 && d0<0x9000)
-						{
+						if (j!=11 && d0>=0x8000 && d0<0x9000) {
 							if (d0>=0x8000+LISTAREASIZE) break;
-						}
-						else if (i+d0>filesize) break;
+						} else if (i+d0>filesize) break;
 					}
 					// list9 ptr must be in listarea, acode ptr in data 
 					//if (j<12 || (d0>=0x8000 && d0<0x9000)) continue;
@@ -1075,11 +1054,9 @@ GFX_V3C          320 x 96             no
 					scandata.Size=0;
 					scandata.Min=scandata.Max=i+d0;
 					scandata.DriverV4=false;
-					if (ValidateSequence(Image,i+d0,i+d0,scandata,false,true))
-					{
+					if (ValidateSequence(Image,i+d0,i+d0,scandata,false,true)) {
 						L9DEBUG("Found valid header at %d, code size %d\r",i,scandata.Size);
-						if ((scandata.Size>MaxSize) && (scandata.Size>100))
-						{
+						if ((scandata.Size>MaxSize) && (scandata.Size>100)) {
 							Offset=i;
 							MaxSize=scandata.Size;
 							L9GameType=scandata.DriverV4?L9_V4:L9_V3;
@@ -1092,8 +1069,8 @@ GFX_V3C          320 x 96             no
 	}
 
     private int ScanV2() {
-		byte Chk[] = new byte[filesize+1];
-		byte Image[] = new byte[filesize];
+		byte[] Chk = new byte[filesize+1];
+		byte[] Image = new byte[filesize];
 		
 		int i,MaxSize=0,num;
 		int j;
@@ -1116,19 +1093,14 @@ GFX_V3C          320 x 96             no
 			Chk[i]=(byte)(((Chk[i-1]&0xff)+(l9memory[i-1]&0xff))&0xff);
 	
 		//BUGFIXbyTSAP, possible out of array on L9WORD - Filesize-28+28=Filesize
-		for (i=0;i<filesize-28-1;i++)
-		{
+		for (i=0;i<filesize-28-1;i++) {
 			num=L9WORD(i+28)+1;
-			if (i+num<=filesize && (((Chk[i+num]&0xff)-(Chk[i+32]&0xff))&0xff)==(l9memory[i+0x1e]&0xff))
-			{
-				for (j=0;j<14;j++)
-				{
+			if (i+num<=filesize && (((Chk[i+num]&0xff)-(Chk[i+32]&0xff))&0xff)==(l9memory[i+0x1e]&0xff)) {
+				for (j=0;j<14;j++) {
 					 d0=L9WORD (i+ j*2);
-					 if (j!=13 && d0>=0x8000 && d0<0x9000)
-					 {
+					 if (j!=13 && d0>=0x8000 && d0<0x9000) {
 						if (d0>=0x8000+LISTAREASIZE) break;
-					 }
-					 else if (i+d0>filesize) break;
+					 } else if (i+d0>filesize) break;
 				}
 				// list9 ptr must be in listarea, acode ptr in data 
 				//if (j<14 || (d0>=0x8000 && d0<0x9000)) continue;
@@ -1139,11 +1111,9 @@ GFX_V3C          320 x 96             no
 	
 				scandata.Size=0;
 				scandata.Min=scandata.Max=i+d0;
-				if (ValidateSequence(Image,i+d0,i+d0,scandata,false,false))
-				{
+				if (ValidateSequence(Image,i+d0,i+d0,scandata,false,false)) {
 					L9DEBUG("Found valid V2 header at %d, code size %d\r",i,scandata.Size);
-					if ((scandata.Size>MaxSize)  && (scandata.Size>100))
-					{
+					if ((scandata.Size>MaxSize)  && (scandata.Size>100)) {
 						Offset=i;
 						MaxSize=scandata.Size;
 					}
@@ -1154,7 +1124,7 @@ GFX_V3C          320 x 96             no
 	}
 
     private int ScanV1() {
-		byte Image[] = new byte[filesize];
+		byte[] Image = new byte[filesize];
 		int ImagePtr;
 		int i;
 		byte Replace;
@@ -1175,19 +1145,14 @@ GFX_V3C          320 x 96             no
 		//	exit(0);
 		//}
 	
-		for (i=0;i<filesize;i++)
-		{
-			if (((l9memory[startfile+i]==0) && (l9memory[startfile+i+1]==6)) || ((l9memory[startfile+i]==32) && (l9memory[startfile+i+1]==4)))
-			{
+		for (i=0;i<filesize;i++) {
+			if (((l9memory[startfile+i]==0) && (l9memory[startfile+i+1]==6)) || ((l9memory[startfile+i]==32) && (l9memory[startfile+i+1]==4))) {
 				scandata.Size=0;
 				scandata.Min=scandata.Max=i;
 				scandata.DriverV4=false;
 				Replace=0;
-				if (ValidateSequence(Image,i,i,scandata, false,false))
-					
-				{
-					if ((scandata.Size>MaxCount) && (scandata.Size>100) && (scandata.Size<10000))
-					{
+				if (ValidateSequence(Image,i,i,scandata, false,false)) {
+					if ((scandata.Size>MaxCount) && (scandata.Size>100) && (scandata.Size<10000)) {
 						MaxCount=scandata.Size;
 						MaxMin=scandata.Min;
 						MaxMax=scandata.Max;
@@ -1198,8 +1163,7 @@ GFX_V3C          320 x 96             no
 					Replace=0;
 				}
 	
-				for (ImagePtr=scandata.Min;ImagePtr<=scandata.Max;ImagePtr++)
-				{
+				for (ImagePtr=scandata.Min;ImagePtr<=scandata.Max;ImagePtr++) {
 					if (Image[ImagePtr]==2)
 						Image[ImagePtr]=Replace;
 				}
@@ -1208,24 +1172,18 @@ GFX_V3C          320 x 96             no
 		L9DEBUG("V1scan found code at %d size %d",MaxPos,MaxCount);
 	
 		// V1 dictionary detection from L9Cut by Paul David Doherty 
-		for (i=0;i<filesize-20;i++)
-		{
-			if (l9memory[startfile+i]=='A')
-			{
-				if ((l9memory[startfile+i+1]=='T') && (l9memory[startfile+i+2]=='T') && (l9memory[startfile+i+3]=='A') && (l9memory[startfile+i+4]=='C') && ((l9memory[startfile+i+5]&0xff)==0xcb))
-				{
+		for (i=0;i<filesize-20;i++) {
+			if (l9memory[startfile+i]=='A') {
+				if ((l9memory[startfile+i+1]=='T') && (l9memory[startfile+i+2]=='T') && (l9memory[startfile+i+3]=='A') && (l9memory[startfile+i+4]=='C') && ((l9memory[startfile+i+5]&0xff)==0xcb)) {
 					dictOff1 = i;
 					dictVal1 = l9memory[startfile+dictOff1+6]&0xff;
 					break;
 				}
 			}
 		}
-		for (i=dictOff1;i<filesize-20;i++)
-		{
-			if (l9memory[startfile+i]=='B')
-			{
-				if ((l9memory[startfile+i+1]=='U') && (l9memory[startfile+i+2]=='N') && (l9memory[startfile+i+3]=='C') && ((l9memory[startfile+i+4]&0xff) == 0xc8))
-				{
+		for (i=dictOff1;i<filesize-20;i++) {
+			if (l9memory[startfile+i]=='B') {
+				if ((l9memory[startfile+i+1]=='U') && (l9memory[startfile+i+2]=='N') && (l9memory[startfile+i+3]=='C') && ((l9memory[startfile+i+4]&0xff) == 0xc8)) {
 					dictOff2 = i;
 					dictVal2 = l9memory[startfile+dictOff2+5]&0xff;
 					break;
@@ -1233,12 +1191,9 @@ GFX_V3C          320 x 96             no
 			}
 		}
 		L9V1Game = -1;
-		if ((dictVal1 != 0xff) || (dictVal2 != 0xff))
-		{
-			for (i = 0; i < L9V1Games.length; i++)
-			{
-				if ((L9V1Games[i][L9V1Games_dictVal1] == dictVal1) && (L9V1Games[i][L9V1Games_dictVal2] == dictVal2))
-				{
+		if ((dictVal1 != 0xff) || (dictVal2 != 0xff)) {
+			for (i = 0; i < L9V1Games.length; i++) {
+				if ((L9V1Games[i][L9V1Games_dictVal1] == dictVal1) && (L9V1Games[i][L9V1Games_dictVal2] == dictVal2)) {
 					L9V1Game = i;
 					dictdata = startfile+dictOff1-L9V1Games[i][L9V1Games_dictStart];
 				}
@@ -1248,8 +1203,7 @@ GFX_V3C          320 x 96             no
 		if (L9V1Game >= 0)
 			L9DEBUG ("V1scan found known dictionary: %d",L9V1Game);
 	
-		if (MaxPos>0)
-		{
+		if (MaxPos>0) {
 			acodeptr=startfile+MaxPos;
 			return 0;
 		}
@@ -1336,8 +1290,7 @@ GFX_V3C          320 x 96             no
 		//	first and next subroutines by evaluating the length fields
 		//	of the subroutine headers.
 		//
-		for (i = 4; i < (int)(testsize - 4); i++)
-		{
+		for (i = 4; i < (int)(testsize - 4); i++) {
 			picptr = testptr + i;
 			if (	((l9memory[picptr - 1]&0xff)    != 0xff) ||
 					((l9memory[picptr] & 0x80) !=0) ||
@@ -1350,15 +1303,13 @@ GFX_V3C          320 x 96             no
 			startptr = picptr;
 			tmpptr=picptr;
 
-			while (true)
-			{			
+			while (true) {
 				length = ((l9memory[picptr + 1] & 0x0f) << 8) + (l9memory[picptr + 2]&0xff);
 				if ((length > 0x3ff) || (picptr + length + 4 > testptr + testsize))
 					break;
 				
 				picptr += length;
-				if ((l9memory[picptr - 1]&0xff) != 0xff)
-				{
+				if ((l9memory[picptr - 1]&0xff) != 0xff) {
 					picptr -= length;
 					break;
 				}
@@ -1368,25 +1319,21 @@ GFX_V3C          320 x 96             no
 				count++;
 			}
 
-			if (count > 10)
-			{
+			if (count > 10) {
 				/* Search for the start of the first subroutine */
-				for (j = 4; j < 0x3ff; j++)
-				{
+				for (j = 4; j < 0x3ff; j++) {
 					tmpptr = startptr - j;				
 					if ((l9memory[tmpptr]&0xff) == 0xff || tmpptr < testptr)
 						break;
 						
 					length = ((l9memory[tmpptr + 1] & 0x0f) << 8) + l9memory[tmpptr + 2];
-					if (tmpptr + length == startptr)
-					{
+					if (tmpptr + length == startptr) {
 						startptr = tmpptr;					
 						break;
 					}
 				}
 				
-				if ((l9memory[tmpptr]&0xff) != 0xff)
-				{ 		
+				if ((l9memory[tmpptr]&0xff) != 0xff) {
 					picdata[0] = startptr;
 					picsize[0] = picptr - startptr;
 					return true;
@@ -1409,8 +1356,7 @@ GFX_V3C          320 x 96             no
 		picturesize=0;
 		gfxa5[0]=-1;
 		
-		if (!load(filename))
-		{
+		if (!load(filename)) {
 			error("\rUnable to load: %s\r",filename);
 			return false;
 		}
@@ -1431,8 +1377,7 @@ GFX_V3C          320 x 96             no
 				l9memory=tempbuff;
 			};
 		}
-		
-		
+
 		screencalled=0;
 		l9textmode=0;
 /*
@@ -1442,16 +1387,13 @@ GFX_V3C          320 x 96             no
 
 		*/
 		Offset=Scan();
-		if (Offset<0)
-		{
+		if (Offset<0) {
 			Offset=ScanV2();
 			L9GameType=L9_V2;
-			if (Offset<0)
-			{
+			if (Offset<0) {
 				Offset=ScanV1();
 				L9GameType=L9_V1;
-				if (Offset<0)
-				{
+				if (Offset<0) {
 					error("\rUnable to locate valid Level 9 game in file: %s\r",filename);
 				 	return false;
 				}
@@ -1463,13 +1405,11 @@ GFX_V3C          320 x 96             no
 
 	// setup pointers 
 		if (L9GameType==L9_V1) {
-			if (L9V1Game < 0)
-			{
+			if (L9V1Game < 0) {
 				error("\rWhat appears to be V1 game data was found, but the game was not recognised.\rEither this is an unknown V1 game file or, more likely, it is corrupted.\r");
 				return false;
 			}
-			for (i=0;i<5;i++) //TODO: � ��������� "i<6" �� � ������� ������ 5 ��������, ��������, ����� ��������� � ������������ (v1_time.sna ����������� ��������)
-			{
+			for (i=0;i<5;i++) { //TODO: в оригинале "i<6" но в массиве только 5 значений, поправил, нужно убедиться в правильности (v1_time.sna запускается работает)
 				int off=L9V1Games[L9V1Game][L9V1Games_L9Ptrs+i];
 				if (off<0)
 					L9Pointers[i+2]=acodeptr+off;
@@ -1482,8 +1422,7 @@ GFX_V3C          320 x 96             no
 
 			hdoffset=L9GameType==L9_V2 ? 4 : 0x12;
 
-			for (i=0;i<12;i++)
-			{
+			for (i=0;i<12;i++) {
 				int d0=L9WORD(startdata+hdoffset+i*2);
 				L9Pointers[i]= (i!=11 && d0>=0x8000 && d0<=0x9000) ? listarea+d0-0x8000 : startdata+d0;
 			}
@@ -1495,49 +1434,38 @@ GFX_V3C          320 x 96             no
 			acodeptr=L9Pointers[11];
 		}
 
-		switch (L9GameType)
-		{
-			case L9_V1:
-			{
+		switch (L9GameType) {
+			case L9_V1: {
 				double a1;
 				startmd=acodeptr+L9V1Games[L9V1Game][L9V1Games_msgStart];
 				startmdV2=startmd+L9V1Games[L9V1Game][L9V1Games_msgLen];
 
 				a1=analyseV1();
-				if (a1>0.0 && a1>2 && a1<10)
-				{
+				if (a1>0.0 && a1>2 && a1<10) {
 					L9MsgType=MSGT_V1;
 					L9DEBUG("V1 msg table: wordlen=%d/10\r",(int)(a1*10));
-				}
-				else
-				{
+				} else {
 					error("\rUnable to identify V1 message table in file: %s\r",filename);
 					return false;
 				}
 				break;
 			}
-			case L9_V2:
-			{
+			case L9_V2: {
 				double a2,a1;
 				startmd=startdata + L9WORD(startdata+0x0);
 				startmdV2=startdata + L9WORD(startdata+0x2);
 
 				// determine message type
 				a2=analyseV2();
-				if (a2>0.0 && a2>2 && a2<10)
-				{
+				if (a2>0.0 && a2>2 && a2<10) {
 					L9MsgType=MSGT_V2;
 					L9DEBUG("V2 msg table: wordlen=%d/10\r",(int)(a2*10));
-				}
-				else {
+				} else {
 					a1=analyseV1();
-					if (a1>0 && a1>2 && a1<10)
-					{
+					if (a1>0 && a1>2 && a1<10) {
 						L9MsgType=MSGT_V1;
 						L9DEBUG("V1 msg table: wordlen=%d/10\r",(int)(a1*10));
-					}
-					else
-					{
+					} else {
 						error("\rUnable to identify V2 message table in file: %s\r",filename);
 						return false;
 					}
@@ -1559,16 +1487,12 @@ GFX_V3C          320 x 96             no
 		int pdata[]={-1};
 		int psize[]={0};
 
-		if (pictureaddress>=0)
-		{
-			if (!findsubs(pictureaddress, picturesize, pdata, psize))
-			{
+		if (pictureaddress>=0) {
+			if (!findsubs(pictureaddress, picturesize, pdata, psize)) {
 				//picturedata = -1;
 				//picturesize = 0;
 			}
-		}
-		else
-		{
+		} else {
 			if (!findsubs(startdata, datasize, pdata, psize)
 				&& !findsubs(startfile, startdata - startfile, pdata, psize))
 			{
@@ -1647,8 +1571,7 @@ GFX_V3C          320 x 96             no
 		codeptr=acodeptr+workspace.stack[--workspace.stackptr];
 	}
 
-    private void printnumber()
-	{
+    private void printnumber() {
 		printdecimald0(workspace.vartable[getvar()]);
 	}
 
@@ -1767,21 +1690,18 @@ GFX_V3C          320 x 96             no
 		int a6=list9startptr;
 		int d0=l9memory[a6++]&0xff;
 
-		if (d0==0x16 || d0==0x17)
-		{
+		if (d0==0x16 || d0==0x17) {
 			int d1=l9memory[a6]&0xff;
 			if (d1>0xfa) l9memory[a6]=1;
 			else if (d1+1>=RAMSAVESLOTS) l9memory[a6]=(byte)0xff;
-			else
-			{
+			else {
 				l9memory[a6]=0;
 				if (d0==0x16) ramsave(d1+1); else ramload(d1+1);
 			}
 			l9memory[list9startptr]=l9memory[a6];
 		} else if (d0==0x0b) {
 			String NewName=new String(LastGame);
-			if (l9memory[a6]==0)
-			{
+			if (l9memory[a6]==0) {
 				printstring("\rSearching for next sub-game file.\r");
 				NewName=os_get_game_file(NewName);
 				if (NewName==null) {
@@ -1843,8 +1763,7 @@ GFX_V3C          320 x 96             no
 
     private void NormalRestore() {
 		L9DEBUG("function - restore");
-		if (Cheating)
-		{
+		if (Cheating) {
 			// not really an error
 			Cheating=false;
 			error("\rWord is: %s\r",ibuffstr);
@@ -1898,8 +1817,7 @@ GFX_V3C          320 x 96             no
 		char c_eof=(char)(-1);
 		int count = 0;
 
-		while ((c != '\n') && (c != '\r') && (c != c_eof) && (count < n-1))
-		{
+		while ((c != '\n') && (c != '\r') && (c != c_eof) && (count < n-1)) {
 			if (scriptArrayIndex<scriptArray.length) c=(char) (scriptArray[scriptArrayIndex++]&0xff);
 			else c=c_eof;
 			s[si++] = c;
@@ -1907,13 +1825,10 @@ GFX_V3C          320 x 96             no
 		}
 		s[si] = '\0';
 
-		if (c == c_eof)
-		{
+		if (c == c_eof) {
 			si--;
 			s[si] = '\n';
-		}
-		else if (c == '\r')
-		{
+		} else if (c == '\r') {
 			si--;
 			s[si] = '\n';
 
@@ -2054,12 +1969,10 @@ GFX_V3C          320 x 96             no
 		a3=(unpackd3&3);
 
 	/*uw01 */
-		while (true)
-		{
+		while (true) {
 			int d0=getdictionarycode();
 			if (dictptr>=endwdp5) return true;
-			if (d0>=0x1b)
-			{
+			if (d0>=0x1b) {
 				threechars[a3]=0;
 				unpackd3=d0;
 				return false;
@@ -3478,30 +3391,30 @@ GFX_V3C          320 x 96             no
 
 	////////////////////////////////////////////////////////////////////////
 
-	void os_printchar(char c) {};
+	abstract void os_printchar(char c);
 	//TODO: KILL os_input()
 	String os_input(int size) {return InputString;}; 
-	char os_readchar(int millis) {return '\r';}; 
+	abstract char os_readchar(int millis);
 	boolean os_stoplist() {return false;}; 
-	void os_flush() {};
+	abstract void os_flush();
 	//L9BOOL os_save_file(L9BYTE* Ptr, int Bytes)
-	boolean os_save_file(byte[] buff) {return false;}
+	abstract boolean os_save_file(byte[] buff);
 	//L9BOOL os_load_file(L9BYTE* Ptr, int* Bytes, int Max)
-	byte[] os_load_file() {return null;}
-	void os_graphics(int mode) {};
-	void os_cleargraphics() {};
-	void os_setcolour(int colour, int index) {};
-	void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2) {};
-	void os_fill(int x, int y, int colour1, int colour2) {};
-	void os_show_bitmap(int pic, int x, int y) {};
-	byte[] os_open_script_file() {return null;};
-	String os_get_game_file(String NewName) {return NewName;};
-	String os_set_filenumber(String NewName, int num) {return NewName;};
+	abstract byte[] os_load_file();
+	abstract void os_graphics(int mode);
+	abstract void os_cleargraphics();
+    abstract void os_setcolour(int colour, int index);
+    abstract void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2);
+    abstract void os_fill(int x, int y, int colour1, int colour2);
+    abstract void os_show_bitmap(int pic, int x, int y);
+    abstract byte[] os_open_script_file();
+	abstract String os_get_game_file(String NewName);
+	abstract String os_set_filenumber(String NewName, int num);
 	
 	//added by tsap
-	byte[] os_load(String filename) { return null; };
-	void os_debug(String str) {};
-	void os_verbose(String str) {};
+	abstract byte[] os_load(String filename);
+	abstract void os_debug(String str);
+	abstract void os_verbose(String str);
 
 	///////////////////// New (tsap) implementations ////////////////////
 
@@ -3529,75 +3442,6 @@ GFX_V3C          320 x 96             no
 		l9memory[x+1]=(byte)((val & 0xff00)>>8);
 		l9memory[x+2]=(byte)((val & 0xff0000)>>16);
 		l9memory[x+3]=(byte)((val & 0xff000000)>>24);
-	}
-
-    private char toupper(char c) {
-		if (c>='a' && c<='z') c=(char)(c-32);
-		return c;
-	}
-
-    private char tolower(char c) {
-		if (c>='A' && c<='Z') c=(char)(c+32);
-		return c;
-	}
-
-    private boolean isdigit(char c) {
-		return (c>='0' && c<='9');
-	};
-
-    private boolean isupper(char c) {
-		return (c>='A' && c<='Z');
-	};
-	
-	//compare buff to lowercase string, true if least #len# of chars equals.  
-    private boolean stricmp(char[] buff,String str, int len) {
-		if (len>buff.length) return false;
-		for (int i=0;i<len;i++) {
-			if (tolower(buff[i])!=str.charAt(i)) return false;
-		}
-		return true;
-	};
-    private boolean stricmp(char[] buff,String str) {
-		int len=str.length();
-		return stricmp(buff,str,len);
-	}
-
-    private boolean isalnum(char c) {
-		return ((c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9'));
-	}
-	
-	//returns NUM from array of chars, begins from index, or -1 if wrong rezult
-    private int sscanf(char[] ibuff, int index) {
-		int num = -1;
-		int n;
-		for (int i=index;i<ibuff.length;i++) {
-			n=ibuff[i]-'0';
-			if (n>=0 && n<=9) num=(num<0?0:(num*10))+n;
-			else {
-				if (num>=0) break; 
-			};
-		};
-		return num;
-	};
-	
-	//for now returns 1 if string s found in array c, 0 otherwise
-    private int strstr(char[] c, String s) {
-		int i=0;
-		int j;
-		int sl=s.length();
-		int cl=c.length;
-		int rez=0;
-		while (i<cl-sl) {
-			rez=1;
-			for (j=0;j<sl;j++)
-				if (toupper(c[i+j])!=s.charAt(j)) {
-					rez=0;
-					break;
-				};
-			if (rez==1) break;
-			i++;
-		}
-		return rez;
 	}
 	
 	//L9DEBUG
@@ -3678,281 +3522,3 @@ GFX_V3C          320 x 96             no
 	}
 	*/
 }
-
-/*-------------
- typedef struct
-{
-	L9UINT32 Id;
-	L9UINT16 codeptr,stackptr,listsize,stacksize,filenamesize,checksum;
-	L9UINT16 vartable[256];
-	L9BYTE listarea[LISTAREASIZE];
-	L9UINT16 stack[STACKSIZE];
-	char filename[MAX_PATH];
-} GameState;
-
-*/
-class GameState {
-
-	private static final int VARSIZE = 256;
-	private static final int L9_ID=0x4c393031;
-	
-	int Id;
-	short codeptr,stackptr,listsize,stacksize,filenamesize,checksum;
-	short[] vartable;
-	//byte listarea[];
-	short[] stack;
-	String filename;
-	
-	GameState() {
-		vartable=new short[VARSIZE];
-		//listarea=new byte[LISTAREASIZE];
-		stack=new short[L9.STACKSIZE];
-	}
-
-	public GameState clone() {
-		GameState gs=new GameState();
-		gs.codeptr=this.codeptr;
-		gs.stackptr=this.stackptr;
-		gs.listsize=this.listsize;
-		gs.stacksize=this.stacksize;
-		gs.filenamesize=this.filenamesize;
-		gs.checksum=this.checksum;
-		gs.vartable=this.vartable.clone();
-		gs.stack=this.stack.clone();
-		gs.filename=this.filename+"";
-		return gs;
-	}
-	
-	/*
-	
-	void save(void)
-	{
-		L9UINT16 checksum;
-		int i;
-	#ifdef L9DEBUG
-		printf("function - save\n");
-	#endif
-	// does a full save, workpace, stack, codeptr, stackptr, game name, checksum 
-	
-		workspace.Id=L9_ID;
-		workspace.codeptr=codeptr-acodeptr;
-		workspace.listsize=LISTAREASIZE;
-		workspace.stacksize=STACKSIZE;
-		workspace.filenamesize=MAX_PATH;
-		workspace.checksum=0;
-		strcpy(workspace.filename,LastGame);
-	
-		checksum=0;
-		for (i=0;i<sizeof(GameState);i++) checksum+=((L9BYTE*) &workspace)[i];
-		workspace.checksum=checksum;
-	
-		if (os_save_file((L9BYTE*) &workspace,sizeof(workspace))) printstring("\rGame saved.\r");
-		else printstring("\rUnable to save game.\r");
-	}
-	
-	typedef struct
-	{
-		L9UINT32 Id;
-		L9UINT16 codeptr,stackptr,listsize,stacksize,filenamesize,checksum;
-		L9UINT16 vartable[256];
-		L9BYTE listarea[LISTAREASIZE];
-		L9UINT16 stack[STACKSIZE];
-		char filename[MAX_PATH];
-	} GameState;
-
-	размер отгрузки: 4+6*2+256*2+0x800+1024*2+256 = 4+12+512+2048+2048+256 = 4880
-
-	 */
-	
-	//TODO: см.ниже - +3 нафига???
-	public byte[] getCloneInBytes(byte[] mem, int startmem) {
-		short buff[]=new short[2+6+VARSIZE+(listsize/2)+L9.STACKSIZE+(256/2)];
-		int i=0,j;
-		int i_checksum;
-		int c_checksum;
-		//Id
-		buff[i++]=L9_ID&0xffff;
-		buff[i++]=L9_ID>>16;
-		//L9UINT16 codeptr
-		buff[i++]=codeptr;
-		//L9UINT16 stackptr
-		buff[i++]=stackptr;
-		//L9UINT16 listsize
-		buff[i++]=listsize; //count in bytes. listsize
-		//L9UINT16 stacksize
-		buff[i++]=stacksize;
-		//L9UINT16 filenamesize
-		buff[i++]=(short)filename.length();
-		//L9UINT16 checksum;
-		i_checksum=i;
-		i++;
-		//L9UINT16 vartable[256];
-		for (j=0;j<VARSIZE;j++) buff[i++]=vartable[j];
-		//L9BYTE listarea[LISTAREASIZE];
-		for (j=0;j<listsize/2;j++) buff[i++]=(short)((mem[startmem+j*2]&0xff)|((mem[startmem+j*2+1]&0xff)<<8));
-		//L9UINT16 stack[STACKSIZE];
-		for (j=0;j<L9.STACKSIZE;j++) buff[i++]=stack[j];
-		//char filename[MAX_PATH];
-		j=0;
-		short sym;
-		while (j<filename.length()) {
-			sym=(short)(filename.charAt(j++)&0xff);
-			if (j<filename.length()) {
-				sym = (short) (sym | (((filename.charAt(j++))&0xff)<<8));
-			};
-			if (i<buff.length) buff[i++] = sym;
-		}
-		
-		c_checksum=0;
-		for (j=0;j<buff.length;j++) {
-			c_checksum+=(buff[j]&0xff)+((buff[j]&0xff00)>>8);
-		};
-		checksum=(short)(c_checksum&0xffff);
-		buff[i_checksum]=checksum;
-		
-		byte[] bytebuff=new byte[buff.length*2];
-		for (j=0;j<i;j++) {
-			bytebuff[j*2]=(byte)(buff[j]&0xff); bytebuff[j*2+1]=(byte)(buff[j]>>8);
-		};
-		return bytebuff;
-	}
-	
-	//for save() - old version, not compatible with l9.net and level 9
-	public byte[] getCloneInBytesV04(byte[] mem, int startmem) {
-		short buff[]=new short[2+1+filename.length()+3+VARSIZE+1+L9.STACKSIZE+1+listsize/2+1];
-		int i=0,j;
-		buff[i++]=L9_ID>>16;
-		buff[i++]=L9_ID&0xffff;
-		buff[i++]=(short)filename.length();
-		for (j=0; j<filename.length();j++) 
-			buff[i++]=(short)filename.charAt(j);
-		buff[i++]=codeptr;
-		buff[i++]=stackptr;
-		buff[i++]=VARSIZE;
-		for (j=0;j<VARSIZE;j++) buff[i++]=vartable[j];
-		buff[i++]=stacksize;
-		for (j=0;j<L9.STACKSIZE;j++) buff[i++]=stack[j];
-		buff[i++]=listsize; //count in bytes. listsize
-		for (j=0;j<listsize/2;j++) buff[i++]=(short)((mem[startmem+j*2]&0xff)|((mem[startmem+j*2+1]&0xff)<<8));
-		checksum=0;
-		for (j=0;j<i;j++) checksum+=buff[j]; 
-		buff[i++]=checksum;
-		byte bytebuff[]=new byte[buff.length*2];
-		for (j=0;j<i;j++) {
-			bytebuff[j*2]=(byte)(buff[j]&0xff); bytebuff[j*2+1]=(byte)(buff[j]>>8);
-		};
-		return bytebuff;
-	}
-	
-	//for restore()
-	public boolean setFromCloneInBytes(byte[] bytebuff, byte[] mem, int startmem) {
-		int i=0,j=0,s,b;
-		s=bytebuff.length;
-		short buff[]=new short[s/2];
-		while (j<s) {
-			buff[i++]=(short)(bytebuff[j]&0xff|((bytebuff[j+1]&0xff)<<8));
-			j+=2;
-		}
-		
-		i=0;
-		if (buff[i]==(L9_ID>>16) && (buff[i+1]==(L9_ID&0xffff))) {
-			//
-			//  old gamefile version (up to l9droid v0.4)
-			//
-			i+=2; //id
-			s=buff[i++];
-			filename="";
-			for (j=0;j<s;j++) filename+=(char)buff[i++];
-			//if (!name.equalsIgnoreCase(filename)) return false; 
-			codeptr=buff[i++];
-			stackptr=buff[i++];
-			if (buff[i++]!=VARSIZE) return false;
-			for (j=0;j<VARSIZE;j++) vartable[j]=buff[i++];
-			stacksize=buff[i++];
-			for (j=0;j<L9.STACKSIZE;j++) stack[j]=buff[i++];
-			listsize=buff[i++]; //count in bytes. listsize
-			checksum=0;
-			for (j=0;j<i+listsize/2;j++) checksum+=buff[j]; 
-			if (buff[i+listsize/2]!=checksum) return false;
-			for (j=0;j<listsize/2;j++) {
-				b=buff[i++]&0xffff;
-				mem[startmem+j*2]=(byte)(b&0xff);
-				mem[startmem+j*2+1]=(byte)((b>>8)&0xff);
-			};
-			return true;
-		} else {
-			//
-			//  l9.net and level9 compatible version
-			//
-			//Id
-			if (buff[i++]!=(L9_ID&0xffff)) return false;
-			if (buff[i++]!=(L9_ID>>16)) return false;
-			//L9UINT16 codeptr
-			codeptr=buff[i++];			
-			//L9UINT16 stackptr
-			stackptr=buff[i++];			
-			//L9UINT16 listsize
-			listsize=buff[i++];			
-			//L9UINT16 stacksize
-			stacksize=buff[i++];
-			//L9UINT16 filenamesize
-			short filenamesize = buff[i++];
-			//L9UINT16 checksum;
-			short buff_checksum=buff[i];
-			buff[i++]=0;
-			checksum=0;
-			for (j=0;j<buff.length;j++) checksum+=buff[j];
-
-			int c_checksum=0;
-			for (j=0;j<buff.length;j++) {
-				c_checksum+=(buff[j]&0xff)+((buff[j]&0xff00)>>8);
-			};
-			checksum=(short)(c_checksum&0xffff);
-			
-			if (buff_checksum!=checksum) return false;
-
-			//L9UINT16 vartable[256];
-			for (j=0;j<VARSIZE;j++) vartable[j]=buff[i++];
-			//L9BYTE listarea[LISTAREASIZE];
-			for (j=0;j<listsize/2;j++) {
-				b=buff[i++]&0xffff;
-				mem[startmem+j*2]=(byte)(b&0xff);
-				mem[startmem+j*2+1]=(byte)((b>>8)&0xff);
-			};
-			//L9UINT16 stack[STACKSIZE];
-			for (j=0;j<L9.STACKSIZE;j++) stack[j]=buff[i++];
-			//char filename[MAX_PATH];
-			filename="";
-			while (filenamesize>0) {
-				b=buff[i++]&0xffff; 	if ((b&0xff)<32) break;
-				filename+=(char)(b&0xff);
-				b=(b>>8)&0xff;			if ((b&0xff)<32) break;
-				if (--filenamesize>0) filename+=(char)b;
-				filenamesize--;
-			};
-			//if (!name.equalsIgnoreCase(filename)) return false; 
-			
-			return true;
-		}
-	}
-}
-
-class SaveStruct {
-	short[] vartable;
-	byte[] listarea;
-	SaveStruct() {
-		vartable=new short[256];
-		listarea=new byte[L9.LISTAREASIZE];
-	}
-}
-
-class ScanData {
-	int Size;
-	int Min,Max;
-	boolean JumpKill, DriverV4;
-};
-
-class PosScanCodeMask {
-	int Pos;
-	int ScanCodeMask;
-};

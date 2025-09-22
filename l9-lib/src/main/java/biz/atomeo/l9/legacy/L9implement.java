@@ -69,13 +69,13 @@ public class L9implement extends L9 {
 	int L9PaletteIndexes[]={0,0,0,0};
 	int SelectedPalette[];
 
-	
-	//������ ������ �������, � ������.
+
+    //размер буфера заливки, в словах.
 	final static int L9Fill_StackSize=512;
 	int L9_FillStack[];
-	//������� ���������� ������ �������
+    //текущее заполнение буфера заливки
 	int L9_FillCount;
-	//������� ����� ��� �������.
+    //текущие цвета для заливки.
 	int L9_FillColour1;
 	int L9_FillColour2;
 	
@@ -92,27 +92,31 @@ public class L9implement extends L9 {
 		L9_FillStack=new int[L9Fill_StackSize];
 		SelectedPalette=new int[32];
 	};
-	
+
+    @Override
 	void os_printchar(char c) {
 		if (c==0x0d) log_debug(ds.getstr());
 		else if (ds.putchar(c)) log_debug(ds.getstr());
 		msg = mHandler.obtainMessage(Threads.MACT_PRINTCHAR, c, 0);
 		mHandler.sendMessage(msg);
 	};
-	
+
+    @Override
 	byte[] os_load(String filename) {
 		return lib.fileLoadGame(filename);
 	};
-	
+
+    @Override
 	void os_debug(String str) {
 		log_debug(ds.getstr());
 		log_debug(str);
 	};
-	
+
+    @Override
 	void os_verbose(String str) {
 		log_verbose(str);
 	};
-	
+
 	void log_debug(String str) {
 		final String LOG_TAG = "l9droid";
 	//	if (str.length()>0) 
@@ -141,7 +145,8 @@ public class L9implement extends L9 {
 		};
 		return script;
 	};
-	
+
+    @Override
 	void os_graphics(int mode) {
 		int[] pw={0};
 		int[] ph={0};
@@ -169,13 +174,15 @@ public class L9implement extends L9 {
 		};
 
 	}
-	
+
+    @Override
 	void os_cleargraphics() {
 		if (PicMode==0 || PicMode==2 || PicBuff==null /*|| iApV->iPicturesEnabled==EFalse*/) return;
 		L9_FillCount=0; //�������� ��������, ���� ��� �����������.
 		for (int i=0;i<PicHeight*PicWidth;i++) PicBuff[i]=0;
 	};
-	
+
+    @Override
 	void os_show_bitmap(int pic, int x, int y) {
 		if (PicMode==0 || PicMode==1 ) {
 			lastpic=-1;
@@ -211,7 +218,8 @@ public class L9implement extends L9 {
 			else SelectedPalette[i]=PaletteSpectrum[L9PaletteIndexes[i]];
 		};
 	};
-	
+
+    @Override
 	void os_setcolour(int colour, int index) {
 		if (PicMode==0 || PicMode==2) return;
 		if ((index>7) || (index<0) || (colour >3) || (colour<0)) return;
@@ -253,6 +261,7 @@ public class L9implement extends L9 {
 	//b=y-k*x
 	//
 
+    @Override
 	void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2)
 	{
 		if (PicMode==0 || PicMode==2) return;
@@ -291,7 +300,8 @@ public class L9implement extends L9 {
 			L9Plot(x2, y2, colour1, colour2);
 		};
 	};
-	
+
+    @Override
 	void os_fill(int x, int y, int colour1, int colour2) {
 		L9Fill_Start (x, y, colour1, colour2);
 	};
@@ -409,11 +419,13 @@ public class L9implement extends L9 {
 		if (lib.FileExist(pictureFile)) return pictureFile;
 		return null;
 	}
-	
+
+    @Override
 	String os_get_game_file(String NewName) {
 		return os_set_filenumber(NewName,0);
 	};
-	
+
+    @Override
 	String os_set_filenumber(String NewName, int num) {
 		int i=NewName.length();
 		char c;
@@ -424,7 +436,8 @@ public class L9implement extends L9 {
 		};
 		return NewName.substring(0, i)+String.valueOf(num)+NewName.substring(i+1, NewName.length());
 	};
-	
+
+    @Override
 	char os_readchar(int millis) {
 		char key=0;
 		if (millis!=0) {
@@ -445,7 +458,8 @@ public class L9implement extends L9 {
 		};
 		return key;
 	};
-	
+
+    @Override
 	boolean os_save_file(byte[] buff) {
 		String prefix = "state";
 		if (th!=null && th.activity!=null) prefix=th.activity.pref_syssaveprefix;
@@ -456,7 +470,8 @@ public class L9implement extends L9 {
 		save_piclog(path);
 		return lib.fileSaveFromArray(path,buff);
 	};
-	
+
+    @Override
 	byte[] os_load_file() {
 		th.choosing_restore_filename=true;
 		mHandler.sendEmptyMessage(Threads.MACT_L9SELECTFILENAMETORESTORE);
@@ -476,7 +491,7 @@ public class L9implement extends L9 {
 		return lib.fileLoadToArray(path);
 	};
 	
-	boolean restore_autosave(String path) {
+	public boolean restore_autosave(String path) {
 
 		if (path==null) return false;
 		byte buff[]=lib.fileLoadToArray(path);
@@ -492,7 +507,7 @@ public class L9implement extends L9 {
 		return false;
 	};
 	
-	boolean autosave(String path) {
+	public boolean autosave(String path) {
 		workspace.codeptr=(short)((codeptr-acodeptr)&0xffff);
 		workspace.listsize=LISTAREASIZE;
 		workspace.stacksize=STACKSIZE;

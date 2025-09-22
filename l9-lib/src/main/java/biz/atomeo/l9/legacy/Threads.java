@@ -37,7 +37,7 @@ public class Threads {
     
     Bitmap bm=null;
     L9implement l9;
-    byte gamedata[];
+    byte[] gamedata;
     
     static boolean gfx_ready=false;
     
