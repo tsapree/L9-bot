@@ -24,8 +24,8 @@ public class L9implement extends L9 {
 	byte gamedata[];
 	
 	//Gfx
-	byte PicBuff[]=null;
-    int PicColorBuff[]=null;
+	byte[] PicBuff=null;
+    int[] PicColorBuff=null;
     Bitmap bm=null;
     int L9BitmapType=0;
     //L9Picture pic_bitmap=null;
@@ -40,7 +40,7 @@ public class L9implement extends L9 {
 	
 	int iPicturesPalette=0;
 	
-	int PaletteAmiga[]={
+	int[] PaletteAmiga = {
 			0xff000000,
 			0xffff0000,
 			0xff30e830,
@@ -55,7 +55,7 @@ public class L9implement extends L9 {
 	//on speccy 8 colors plus 2 grade of bright.
 	//in l9 games bright often set to 0 on pictures.
 
-	int PaletteSpectrum[]={
+	int[] PaletteSpectrum = {
 			0xff000000,		//(black)  0
 			0xffC00000,		//(red)    2
 			0xff00C000,		//(green)  4
@@ -66,13 +66,13 @@ public class L9implement extends L9 {
 			0xffC0C0C0		//(white)  7
 	};
 
-	int L9PaletteIndexes[]={0,0,0,0};
-	int SelectedPalette[];
+	int[] L9PaletteIndexes={0,0,0,0};
+	int[] SelectedPalette;
 
 
     //размер буфера заливки, в словах.
 	final static int L9Fill_StackSize=512;
-	int L9_FillStack[];
+	int[] L9_FillStack;
     //текущее заполнение буфера заливки
 	int L9_FillCount;
     //текущие цвета для заливки.
@@ -139,7 +139,7 @@ public class L9implement extends L9 {
 	};
 	
 	byte[] os_open_script_file() {
-		byte script[] = {'u','n','f','a','s',' ','p','a','r','a','\r',
+		byte[] script = {'u','n','f','a','s',' ','p','a','r','a','\r',
 				'u','\r',
 				't','a','k','e',' ','p','a','r','a','\r'
 		};
@@ -262,8 +262,7 @@ public class L9implement extends L9 {
 	//
 
     @Override
-	void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2)
-	{
+	void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2) {
 		if (PicMode==0 || PicMode==2) return;
 
 		int x0;
