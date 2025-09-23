@@ -1,26 +1,30 @@
 package biz.atomeo.l9.legacy;
 
+import biz.atomeo.l9.legacy.androidMocks.Bitmap;
+import biz.atomeo.l9.legacy.androidMocks.Handler;
+import biz.atomeo.l9.legacy.androidMocks.Message;
+import biz.atomeo.l9.legacy.androidMocks.SpannableStringBuilder;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Message;
-import android.text.SpannableStringBuilder;
-import android.util.Log;
-import android.widget.EditText;
+//import android.graphics.Bitmap;
+//import android.os.Handler;
+//import android.os.Message;
+//import android.text.SpannableStringBuilder;
+//import android.util.Log;
+//import android.widget.EditText;
 
 public class L9implement extends L9 {
 	String cmdStr;
 	DebugStorage ds;
 	String vStr;
 	Handler mHandler;
-	Message msg;
 	Library lib;
 	Threads th;
 	ArrayList<SpannableStringBuilder> tempLog;
 	
-	EditText et;
+	//EditText et;
 	byte gamedata[];
 	
 	//Gfx
@@ -97,7 +101,7 @@ public class L9implement extends L9 {
 	void os_printchar(char c) {
 		if (c==0x0d) log_debug(ds.getstr());
 		else if (ds.putchar(c)) log_debug(ds.getstr());
-		msg = mHandler.obtainMessage(Threads.MACT_PRINTCHAR, c, 0);
+        Message msg = mHandler.obtainMessage(Threads.MACT_PRINTCHAR, c, 0);
 		mHandler.sendMessage(msg);
 	};
 
@@ -137,7 +141,8 @@ public class L9implement extends L9 {
 	void step() {
 		while (L9State==L9StateRunning || L9State==L9StateCommandReady) RunGame();
 	};
-	
+
+    //плейбэк скрипта
 	byte[] os_open_script_file() {
 		byte[] script = {'u','n','f','a','s',' ','p','a','r','a','\r',
 				'u','\r',
@@ -493,7 +498,7 @@ public class L9implement extends L9 {
 	public boolean restore_autosave(String path) {
 
 		if (path==null) return false;
-		byte buff[]=lib.fileLoadToArray(path);
+		byte[] buff=lib.fileLoadToArray(path);
 		GameState tempGS=new GameState();
 		if (buff==null) return false;
 		if (tempGS.setFromCloneInBytes(buff, l9memory, listarea)) {
@@ -513,35 +518,37 @@ public class L9implement extends L9 {
 		workspace.filename=LastGame;
 		save_piclog(path);
 		byte buff[]=workspace.getCloneInBytes(l9memory, listarea);
-		if (!lib.fileSaveFromArray(path, buff)) return false;
-		else return true;
+//		if (!lib.fileSaveFromArray(path, buff))
+//	    	return false;
+//		else
+	    	return true;
 	};
 	
 	void save_piclog(String path) {
 		String name;
 		
-		name=lib.changeFileExtension(path, "log");
-		lib.SaveLogFromSpannableArrayAdapter(name, th.lvAdapter, th.logStrId);
-		
-		name=lib.changeFileExtension(path, "png");
-		if (PicMode!=0) waitPictureToDraw();
-		if (bm!=null) lib.pictureSaveFromBitmap(name, bm);
-		else lib.deleteFile(name);
+//		name=lib.changeFileExtension(path, "log");
+//		lib.SaveLogFromSpannableArrayAdapter(name, th.lvAdapter, th.logStrId);
+//
+//		name=lib.changeFileExtension(path, "png");
+//		if (PicMode!=0) waitPictureToDraw();
+//		if (bm!=null) lib.pictureSaveFromBitmap(name, bm);
+//		else lib.deleteFile(name);
 	}
 
 	void load_piclog(String path, History h) {
 		String name;
-		name=lib.changeFileExtension(path, "png");
-		waitPictureToDraw();
-		bm=lib.pictureLoadToBitmap(name);
-		if (bm!=null) mHandler.sendEmptyMessage(Threads.MACT_GFXUPDATE);
-		
-		name=lib.changeFileExtension(path, "log");
-		tempLog=lib.LoadLogToSpannableArrayList(name,(th!=null&&th.activity!=null)?th.activity.pref_logcommandcolor:0);
-		h.clear();
-		for (SpannableStringBuilder logStr:tempLog) {
-			h.add(lib.getSpannedString(logStr));
-		}
+//		name=lib.changeFileExtension(path, "png");
+//		waitPictureToDraw();
+//		bm=lib.pictureLoadToBitmap(name);
+//		if (bm!=null) mHandler.sendEmptyMessage(Threads.MACT_GFXUPDATE);
+//
+//		name=lib.changeFileExtension(path, "log");
+//		tempLog=lib.LoadLogToSpannableArrayList(name,(th!=null&&th.activity!=null)?th.activity.pref_logcommandcolor:0);
+//		h.clear();
+//		for (SpannableStringBuilder logStr:tempLog) {
+//			h.add(lib.getSpannedString(logStr));
+//		}
 	};
 
 	void waitPictureToDraw() {

@@ -1,14 +1,20 @@
 package biz.atomeo.l9.legacy;
 
+import biz.atomeo.l9.legacy.androidMocks.Bitmap;
+import biz.atomeo.l9.legacy.androidMocks.Handler;
+import biz.atomeo.l9.legacy.androidMocks.Message;
+import biz.atomeo.l9.legacy.androidMocks.SpannableStringBuilder;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import android.graphics.Bitmap;
-import android.os.Handler;
-import android.text.SpannableStringBuilder;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
+//import android.graphics.Bitmap;
+//import android.os.Handler;
+//import android.text.SpannableStringBuilder;
+//import android.view.View;
+//import android.widget.ArrayAdapter;
+//import android.widget.Toast;
 
 public class Threads {
 	
@@ -42,12 +48,12 @@ public class Threads {
     static boolean gfx_ready=false;
     
 	//ArrayAdapter<SpannableStringBuilder> lvAdapter;
-    CustomisableListAdapter<SpannableStringBuilder> lvAdapter;
+    List<SpannableStringBuilder> lvAdapter;
 	SpannableStringBuilder logStringCapacitor=null;
 	int logStrId=-1;
 	
 	History history;
-	CustomisableListAdapter<String> lvHistoryAdapter;
+	List<String> lvHistoryAdapter;
 	
 	char keyPressed=0;
 	
@@ -56,7 +62,7 @@ public class Threads {
 
     void link(GameActivity m) {
     	activity=m;
-    	activity.ivScreen.setImageBitmap(bm);
+    	//activity.ivScreen.setImageBitmap(bm);
     }
     
     void unlink() {
@@ -65,72 +71,72 @@ public class Threads {
     
 	void create() {
 		lib=Library.getInstance();
-	    lib.prepareLibrary();
-	    
+//	    lib.prepareLibrary();
+
 		//lvAdapter = new ArrayAdapter<SpannableStringBuilder>(activity, R.layout.log_list_item, new ArrayList<SpannableStringBuilder>());
-	    lvAdapter = new CustomisableListAdapter<SpannableStringBuilder>(activity, R.layout.log_list_item, new ArrayList<SpannableStringBuilder>());
+	    lvAdapter = new ArrayList<SpannableStringBuilder>();
 		history=new History();
-		lvHistoryAdapter = new CustomisableListAdapter<String>(activity, R.layout.history_list_item, history.getHistory());
+		lvHistoryAdapter = new ArrayList<String>(); //CustomisableListAdapter<String>(activity, R.layout.history_list_item, history.getHistory());
 
 		//lvHistoryAdapter.add("unfas para");
 		
 		needToQuit=false;
 		h = new Handler() {
-		    public void handleMessage(android.os.Message msg) {
+		    public void handleMessage(Message msg) {
 		    	try {
-		    		//сведение вероятности падения при повороте экрана к минимуму
-		    		//TODO:  внимание! возможно зависание при выходе из программы
+		    		//СЃРІРµРґРµРЅРёРµ РІРµСЂРѕСЏС‚РЅРѕСЃС‚Рё РїР°РґРµРЅРёСЏ РїСЂРё РїРѕРІРѕСЂРѕС‚Рµ СЌРєСЂР°РЅР° Рє РјРёРЅРёРјСѓРјСѓ
+		    		//TODO:  РІРЅРёРјР°РЅРёРµ! РІРѕР·РјРѕР¶РЅРѕ Р·Р°РІРёСЃР°РЅРёРµ РїСЂРё РІС‹С…РѕРґРµ РёР· РїСЂРѕРіСЂР°РјРјС‹
 					while (activity==null) 
 						TimeUnit.MILLISECONDS.sleep(200);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				};
+				}
 		    	switch (msg.what) {
 		    	case MACT_L9WORKING:
 		    		menuHashEnabled=false;
 		    		//activity.bCmd.setText("...");
 		    		//activity.bCmdSetText("...");
-		    		activity.ibCmd.setEnabled(false);
+//		    		activity.ibCmd.setEnabled(false);
 		    		break;
 		    	case MACT_L9WAITFORCOMMAND:
-		    		activity.outLogFlush(false);
-		    		activity.etCmd.setFocusable(true);
-		    		activity.etCmd.requestFocus();
+//		    		activity.outLogFlush(false);
+//		    		activity.etCmd.setFocusable(true);
+//		    		activity.etCmd.requestFocus();
 		    		menuHashEnabled=true;
 		    		//activity.bCmd.setText("Do");
 		    		//activity.bCmdSetText("Do");
-		    		activity.ibCmd.setEnabled(true);
-		    		activity.bSpace.setVisibility(View.INVISIBLE);
-		    		activity.bEnter.setVisibility(View.INVISIBLE);
-		    		activity.ibCmd.setVisibility(View.VISIBLE);
-		    		activity.etCmd.setVisibility(View.VISIBLE);
-		    		activity.etCmd.requestFocus();
+//		    		activity.ibCmd.setEnabled(true);
+//		    		activity.bSpace.setVisibility(View.INVISIBLE);
+//		    		activity.bEnter.setVisibility(View.INVISIBLE);
+//		    		activity.ibCmd.setVisibility(View.VISIBLE);
+//		    		activity.etCmd.setVisibility(View.VISIBLE);
+//		    		activity.etCmd.requestFocus();
 		    		break;
 		    	case MACT_L9WAITFORCHAR:
-		    		activity.outLogFlush(true);
-		    		activity.bSpace.setVisibility(View.VISIBLE);
-		    		activity.bEnter.setVisibility(View.VISIBLE);
-		    		activity.ibCmd.setVisibility(View.INVISIBLE);
-		    		activity.etCmd.setVisibility(View.INVISIBLE);
-		    		if (!activity.bEnter.isFocused())
-		    			activity.bSpace.requestFocusFromTouch();
+//		    		activity.outLogFlush(true);
+//		    		activity.bSpace.setVisibility(View.VISIBLE);
+//		    		activity.bEnter.setVisibility(View.VISIBLE);
+//		    		activity.ibCmd.setVisibility(View.INVISIBLE);
+//		    		activity.etCmd.setVisibility(View.INVISIBLE);
+//		    		if (!activity.bEnter.isFocused())
+//		    			activity.bSpace.requestFocusFromTouch();
 		    		keyPressed=0;
 		    		break;	
 		    	case MACT_L9WAITBEFORESCRIPT:
 		    		//activity.bCmd.setText("<!>");
 		    		//activity.bCmdSetText("<!>");
-		    		activity.ibCmd.setEnabled(false);
+//		    		activity.ibCmd.setEnabled(false);
 		    		break;
 		    	case MACT_L9SELECTFILENAMETORESTORE:
-		    		activity.selectFileToRestore();
+//		    		activity.selectFileToRestore();
 		    		break;
 	    		case MACT_PRINTCHAR:
 	    			char c=(char)msg.arg1;
-	    			if (c==0x0d) activity.outCharToLog('\n');
-	    			else activity.outCharToLog(c);
+//	    			if (c==0x0d) activity.outCharToLog('\n');
+//	    			else activity.outCharToLog(c);
 	    			break;
 	    		case MACT_FLUSH:
-	    			activity.outLogFlush(false);
+//	    			activity.outLogFlush(false);
 	    			break;
 	    		case MACT_REPLACE_LOG:
 	    			logStringCapacitor=null;
@@ -138,22 +144,22 @@ public class Threads {
 	    			lvAdapter.clear();
 	    			if (l9.tempLog!=null) {
 		    			for (int i=0;i<l9.tempLog.size();i++) lvAdapter.add(l9.tempLog.get(i));
-	    			};
-	    			lib.refreshLogCommandsColor(lvAdapter, activity.pref_logcommandcolor);
-	    			logStrId=lvAdapter.getCount()-1;
+	    			}
+//	    			lib.refreshLogCommandsColor(lvAdapter, activity.pref_logcommandcolor);
+//	    			logStrId=lvAdapter.getCount()-1;
 	    			logStringCapacitor=null;
 	    			break;
 	    		case MACT_GFXOFF:
 		    		menuPicturesEnabled=false;
 	    			l9.bm=null;
 	    			bm=null;
-	    			activity.ivScreen.setImageBitmap(bm);
-	    			activity.ivScreen.setVisibility(View.GONE);
+//	    			activity.ivScreen.setImageBitmap(bm);
+//	    			activity.ivScreen.setVisibility(View.GONE);
 	    			break;
 	    		case MACT_GFXON:
 	    			menuPicturesEnabled=true;
-	    			activity.ivScreen.setImageBitmap(bm);
-	    			activity.ivScreen.setVisibility(View.VISIBLE);
+//	    			activity.ivScreen.setImageBitmap(bm);
+//	    			activity.ivScreen.setVisibility(View.VISIBLE);
 	    			break;
 	    		case MACT_GFXUPDATE:
 	    			
@@ -167,19 +173,19 @@ public class Threads {
 	    					} else {
 	    						needUpdatePictureSize = true;
 	    					}
-	    				};
+	    				}
 	    				bm=l9.bm;
-	    				activity.ivScreen.setImageBitmap(bm);
-	    				if (needUpdatePictureSize) activity.updatePictureSize();
+//	    				activity.ivScreen.setImageBitmap(bm);
+//	    				if (needUpdatePictureSize) activity.updatePictureSize();
 	    			}
-	    			activity.ivScreen.invalidate();
+//	    			activity.ivScreen.invalidate();
 	    				
 	    			break;
 		    	case MACT_TOAST:
-		    		Toast.makeText(activity, (String)msg.obj, Toast.LENGTH_LONG).show();
+//		    		Toast.makeText(activity, (String)msg.obj, Toast.LENGTH_LONG).show();
 		    		break;
 		    	}
-		    };
+		    }
 		};
 		h.sendEmptyMessage(MACT_L9WORKING);
 		lib.h=h;
@@ -206,7 +212,7 @@ public class Threads {
         if (loadAutoSave) {
         	l9.restore_autosave(lib.getAbsolutePath("Saves/auto.sav"));
         } else
-        	h.sendEmptyMessage(MACT_GFXOFF); //убираю картинку от прошлой игры
+        	h.sendEmptyMessage(MACT_GFXOFF); //СѓР±РёСЂР°СЋ РєР°СЂС‚РёРЅРєСѓ РѕС‚ РїСЂРѕС€Р»РѕР№ РёРіСЂС‹
         
 		gfx_ready=false;
 		
@@ -236,15 +242,15 @@ public class Threads {
 		        while ((l9.L9State!=l9.L9StateStopped) && (needToQuit!=true)) {
 		        	if (l9.L9State==l9.L9StateWaitForCommand) {
 		        		h.sendEmptyMessage(MACT_L9WAITFORCOMMAND);
-		        		//TODO: проверить try-catch на грамотность, не нужно ли все заключить в них, что произойдет, если наступит exception?
+		        		//TODO: РїСЂРѕРІРµСЂРёС‚СЊ try-catch РЅР° РіСЂР°РјРѕС‚РЅРѕСЃС‚СЊ, РЅРµ РЅСѓР¶РЅРѕ Р»Рё РІСЃРµ Р·Р°РєР»СЋС‡РёС‚СЊ РІ РЅРёС…, С‡С‚Рѕ РїСЂРѕРёР·РѕР№РґРµС‚, РµСЃР»Рё РЅР°СЃС‚СѓРїРёС‚ exception?
 						try {
 							while ((activity==null || activity.command==null) && needToQuit!=true ) {
 					        	//Log.d("l9droid", "thread t still working");
 								TimeUnit.MILLISECONDS.sleep(200);
 							};
 							h.sendEmptyMessage(MACT_L9WORKING);
-							//TODO: t.wait - возможно, более правильное решение.
-							//TODO: возможна потеря activity при повороте экрана
+							//TODO: t.wait - РІРѕР·РјРѕР¶РЅРѕ, Р±РѕР»РµРµ РїСЂР°РІРёР»СЊРЅРѕРµ СЂРµС€РµРЅРёРµ.
+							//TODO: РІРѕР·РјРѕР¶РЅР° РїРѕС‚РµСЂСЏ activity РїСЂРё РїРѕРІРѕСЂРѕС‚Рµ СЌРєСЂР°РЅР°
 							l9.InputCommand(activity.command);
 							activity.command=null;
 						} catch (InterruptedException e) {
@@ -255,7 +261,7 @@ public class Threads {
 		        		try {
 		        			int w = activity.pref_sysscriptdelay;
 		        			while (w-->0) {
-		        				//TODO: сделать возможность прервать исполнение скрипта во время ожидания
+		        				//TODO: СЃРґРµР»Р°С‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РїСЂРµСЂРІР°С‚СЊ РёСЃРїРѕР»РЅРµРЅРёРµ СЃРєСЂРёРїС‚Р° РІРѕ РІСЂРµРјСЏ РѕР¶РёРґР°РЅРёСЏ
 		        				TimeUnit.MILLISECONDS.sleep(1000);
 		        			};
 						} catch (InterruptedException e) {
@@ -271,7 +277,7 @@ public class Threads {
 	}
 	
 	void destroy() {
-		//TODO: почистить очередь?
+		//TODO: РїРѕС‡РёСЃС‚РёС‚СЊ РѕС‡РµСЂРµРґСЊ?
 		if (l9!=null)
 			l9.StopGame();
 		needToQuit=true;

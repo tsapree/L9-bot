@@ -1606,7 +1606,10 @@ GFX_V3C          320 x 96             no
 		if (Cheating) {
 			l9memory[a6] = '\r';
 		} else {
-			/* max delay of 1/50 sec */
+            //TODO в зависимости от статуса машины либо вернуться и ожидать нажатия символа, либо идти дальше как будто символ введен
+			//TODO: если вернуться для ожидания символа - вернуть состояние машины как будто
+            // команду не начали выполнять, кажется нужно только уменьшить ptr
+            /* max delay of 1/50 sec */
 			l9memory[a6]=(byte)os_readchar(20);
 		}
 	}
@@ -1648,7 +1651,7 @@ GFX_V3C          320 x 96             no
 			case 0x13: driverchgcol(a6); break;
 			case 0x01: drivercalcchecksum(a6); break;
 			case 0x02: driveroswrch(a6); break;
-			case 0x03: driverosrdch(a6); break;
+			case 0x03: driverosrdch(a6); break; //os_readchar
 			case 0x05: driversavefile(a6); break;
 			case 0x06: driverloadfile(a6); break;
 			case 0x07: settext(a6); break;
@@ -1912,7 +1915,7 @@ GFX_V3C          320 x 96             no
 				while (l9memory[codeptr++]!=0);
 				break;
 
-			default: ilins(d0);
+			default: ilins(d0); //stop w/illegal instruction error
 		}
 	}
 
@@ -2334,14 +2337,13 @@ GFX_V3C          320 x 96             no
 		int list0ptr;
 
 		if (Cheating) NextCheat();
-		else
-		{
+		else {
 			os_flush();
 			
 			switch (L9State) {
 			case L9StateRunning:
 				if (scriptArray!=null) L9State=L9StateWaitBeforeScriptCommand;
-				else L9State=L9StateWaitForCommand;
+				else L9State=L9StateWaitForCommand; //A way to interrupt VM to wait a command
 				return false;
 			case L9StateCommandReady:
 				L9State=L9StateRunning;
@@ -2458,7 +2460,7 @@ GFX_V3C          320 x 96             no
 		
 		codeptr--;
 		if (L9GameType<=L9_V2) {
-			if (inputV2()) {
+			if (inputV2()) { //FALSE IF NO COMMAND ENTERED
 				//L9BYTE *obuffptr=(L9BYTE*) obuff;
 				codeptr++;
                 //todo: проверить правильность конвертации char в short
@@ -3282,8 +3284,8 @@ GFX_V3C          320 x 96             no
 			case 3:		printnumber();break;
 			case 4:		messagev();break;
 			case 5:		messagec();break;
-			case 6:		function();break;
-			case 7:		input();break;
+			case 6:		function();break; //some functions, with os_readchar
+			case 7:		input();break; //wait for a command from user
 			case 8:		varcon();break;
 			case 9:		varvar();break;
 			case 10:	_add();break;
