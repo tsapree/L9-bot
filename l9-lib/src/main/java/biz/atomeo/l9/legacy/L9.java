@@ -77,6 +77,8 @@ abstract public class L9 {
 	public static final int L9StateWaitForCommand=2;
 	public static final int L9StateCommandReady = 3;
 	public static final int L9StateWaitBeforeScriptCommand=5;
+	public static final int L9StateWaitForKey=6; //TODO
+	public static final int L9StateKeyReady=7;   //TODO
 
 	//char LastGame[MAX_PATH];
 	public String LastGame;

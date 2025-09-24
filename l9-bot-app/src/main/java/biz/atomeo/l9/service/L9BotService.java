@@ -1,5 +1,6 @@
 package biz.atomeo.l9.service;
 
+import biz.atomeo.l9.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 public class L9BotService implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
     private final TelegramClient telegramClient;
     private final String token;
+
+    private L9GameService l9GameService = null;
 
     public L9BotService(
             @Value("${botToken}")
@@ -44,12 +47,16 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
             // Set variables
             String message_text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
+            log.info("Get msg from user:"+message_text);
+            String generatedMessage = doL9Stuff(message_text);
+            log.info("Send msg to user:"+generatedMessage);
 
             SendMessage message = SendMessage // Create a message object
                     .builder()
                     .chatId(chat_id)
-                    .text(message_text)
+                    .text(generatedMessage)
                     .build();
+
             try {
                 telegramClient.execute(message); // Sending our message object to user
             } catch (TelegramApiException e) {
@@ -61,5 +68,19 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
     @AfterBotRegistration
     public void afterRegistration(BotSession botSession) {
         log.info("Registered bot running state is: " + botSession.isRunning());
+    }
+
+    private String doL9Stuff(String userCommand) {
+        L9Request request = L9Request.builder()
+                .command(userCommand)
+                .build();
+        //TODO: хранить в будущем для каждого юзера, сейчас пока для теста один экземпляр всего
+        L9GameState l9GameState = new L9GameState();
+        if (l9GameService == null) {
+            request.setCommand("");
+            l9GameService = L9GameStarter.buildGame(L9Game.EMERALD_ISLE);
+        }
+        L9Response response = l9GameService.doStep(request, l9GameState);
+        return response.getMessage();
     }
 }

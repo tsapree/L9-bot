@@ -87,8 +87,9 @@ public class GameState {
 
     //TODO: см.ниже - +3 нафига???
     public byte[] getCloneInBytes(byte[] mem, int startmem) {
-        short buff[]=new short[2+6+VARSIZE+(listsize/2)+L9.STACKSIZE+(256/2)];
-        int i=0,j;
+        short[] buff=new short[2+6+VARSIZE+(listsize/2)+L9.STACKSIZE+(256/2)];
+        int i=0;
+        int j;
         int i_checksum;
         int c_checksum;
         //Id
