@@ -71,7 +71,7 @@ abstract public class L9 {
 	short constseed=0;
 	//L9BOOL Running;
 	//boolean Running;
-	int L9State;
+	public int L9State;
 	public static final int L9StateStopped=0;
 	public static final int L9StateRunning=1;
 	public static final int L9StateWaitForCommand=2;
@@ -752,14 +752,14 @@ GFX_V3C          320 x 96             no
 	}
 
     private boolean load(String filename) {
-		byte filedata[]=os_load(filename);
+		byte[] filedata=os_load(filename);
 		if (filedata==null) return false;
 		filesize=filedata.length;
 		if (filesize<256) {
 			error("\rFile is too small to contain a Level 9 game\r");
 			return false;
 		};
-		byte newl9memory[]=new byte[filesize+LISTAREASIZE];
+		byte[] newl9memory=new byte[filesize+LISTAREASIZE];
 		//we must save listarea for new file it it is no new game 
 		if ((l9memory!=null) && (listarea>0) && ((listarea+LISTAREASIZE)<=l9memory.length)) {
 			for (int i=0;i<LISTAREASIZE;i++) newl9memory[filesize+i]=l9memory[listarea+i];
@@ -3393,30 +3393,30 @@ GFX_V3C          320 x 96             no
 
 	////////////////////////////////////////////////////////////////////////
 
-	abstract void os_printchar(char c);
+    public abstract  void os_printchar(char c);
 	//TODO: KILL os_input()
-	String os_input(int size) {return InputString;}; 
-	abstract char os_readchar(int millis);
-	boolean os_stoplist() {return false;}; 
-	abstract void os_flush();
+	public String os_input(int size) {return InputString;};
+    public abstract char os_readchar(int millis);
+	boolean os_stoplist() {return false;};
+    public abstract void os_flush();
 	//L9BOOL os_save_file(L9BYTE* Ptr, int Bytes)
-	abstract boolean os_save_file(byte[] buff);
+    public abstract boolean os_save_file(byte[] buff);
 	//L9BOOL os_load_file(L9BYTE* Ptr, int* Bytes, int Max)
-	abstract byte[] os_load_file();
-	abstract void os_graphics(int mode);
-	abstract void os_cleargraphics();
-    abstract void os_setcolour(int colour, int index);
-    abstract void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2);
-    abstract void os_fill(int x, int y, int colour1, int colour2);
-    abstract void os_show_bitmap(int pic, int x, int y);
-    abstract byte[] os_open_script_file();
-	abstract String os_get_game_file(String NewName);
-	abstract String os_set_filenumber(String NewName, int num);
+    public abstract byte[] os_load_file();
+    public abstract void os_graphics(int mode);
+    public abstract void os_cleargraphics();
+    public abstract void os_setcolour(int colour, int index);
+    public abstract void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2);
+    public abstract void os_fill(int x, int y, int colour1, int colour2);
+    public abstract void os_show_bitmap(int pic, int x, int y);
+    public abstract byte[] os_open_script_file();
+    public abstract String os_get_game_file(String NewName);
+    public abstract String os_set_filenumber(String NewName, int num);
 	
 	//added by tsap
-	abstract byte[] os_load(String filename);
-	abstract void os_debug(String str);
-	abstract void os_verbose(String str);
+	public abstract byte[] os_load(String filename);
+	public abstract void os_debug(String str);
+	public abstract void os_verbose(String str);
 
 	///////////////////// New (tsap) implementations ////////////////////
 

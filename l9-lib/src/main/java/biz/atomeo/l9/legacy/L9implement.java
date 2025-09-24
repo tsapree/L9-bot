@@ -98,7 +98,7 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	void os_printchar(char c) {
+    public void os_printchar(char c) {
 		if (c==0x0d) log_debug(ds.getstr());
 		else if (ds.putchar(c)) log_debug(ds.getstr());
         Message msg = mHandler.obtainMessage(Threads.MACT_PRINTCHAR, c, 0);
@@ -106,18 +106,18 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	byte[] os_load(String filename) {
+    public byte[] os_load(String filename) {
 		return lib.fileLoadGame(filename);
 	};
 
     @Override
-	void os_debug(String str) {
+    public void os_debug(String str) {
 		log_debug(ds.getstr());
 		log_debug(str);
 	};
 
     @Override
-	void os_verbose(String str) {
+    public void os_verbose(String str) {
 		log_verbose(str);
 	};
 
@@ -132,8 +132,8 @@ public class L9implement extends L9 {
 	//	if (str.length()>0) 
 	//		Log.v(LOG_TAG, str);
 	};
-	
-	void os_flush() {
+
+    public void os_flush() {
 		mHandler.sendEmptyMessage(Threads.MACT_FLUSH);
 		os_debug(ds.getstr());
 	}
@@ -143,7 +143,7 @@ public class L9implement extends L9 {
 	};
 
     //плейбэк скрипта
-	byte[] os_open_script_file() {
+    public byte[] os_open_script_file() {
 		byte[] script = {'u','n','f','a','s',' ','p','a','r','a','\r',
 				'u','\r',
 				't','a','k','e',' ','p','a','r','a','\r'
@@ -152,7 +152,7 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	void os_graphics(int mode) {
+    public void os_graphics(int mode) {
 		int[] pw={0};
 		int[] ph={0};
 		if (mode==2) {
@@ -181,14 +181,14 @@ public class L9implement extends L9 {
 	}
 
     @Override
-	void os_cleargraphics() {
+    public void os_cleargraphics() {
 		if (PicMode==0 || PicMode==2 || PicBuff==null /*|| iApV->iPicturesEnabled==EFalse*/) return;
 		L9_FillCount=0; //�������� ��������, ���� ��� �����������.
 		for (int i=0;i<PicHeight*PicWidth;i++) PicBuff[i]=0;
 	};
 
     @Override
-	void os_show_bitmap(int pic, int x, int y) {
+    public void os_show_bitmap(int pic, int x, int y) {
 		if (PicMode==0 || PicMode==1 ) {
 			lastpic=-1;
 			return;
@@ -225,7 +225,7 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	void os_setcolour(int colour, int index) {
+    public void os_setcolour(int colour, int index) {
 		if (PicMode==0 || PicMode==2) return;
 		if ((index>7) || (index<0) || (colour >3) || (colour<0)) return;
 		L9PaletteIndexes[colour]=index;
@@ -267,7 +267,7 @@ public class L9implement extends L9 {
 	//
 
     @Override
-	void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2) {
+    public void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2) {
 		if (PicMode==0 || PicMode==2) return;
 
 		int x0;
@@ -306,7 +306,7 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	void os_fill(int x, int y, int colour1, int colour2) {
+    public void os_fill(int x, int y, int colour1, int colour2) {
 		L9Fill_Start (x, y, colour1, colour2);
 	};
 	
@@ -425,12 +425,12 @@ public class L9implement extends L9 {
 	}
 
     @Override
-	String os_get_game_file(String NewName) {
+    public String os_get_game_file(String NewName) {
 		return os_set_filenumber(NewName,0);
 	};
 
     @Override
-	String os_set_filenumber(String NewName, int num) {
+    public String os_set_filenumber(String NewName, int num) {
 		int i=NewName.length();
 		char c;
 		while (i>0) {
@@ -442,7 +442,7 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	char os_readchar(int millis) {
+	public char os_readchar(int millis) {
 		char key=0;
 		if (millis!=0) {
 			mHandler.sendEmptyMessage(Threads.MACT_L9WAITFORCHAR);
@@ -464,7 +464,7 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	boolean os_save_file(byte[] buff) {
+	public boolean os_save_file(byte[] buff) {
 		String prefix = "state";
 		if (th!=null && th.activity!=null) prefix=th.activity.pref_syssaveprefix;
 		String path=Library.DIR_SAVES+"/"+prefix+".sav";
@@ -476,7 +476,7 @@ public class L9implement extends L9 {
 	};
 
     @Override
-	byte[] os_load_file() {
+	public byte[] os_load_file() {
 		th.choosing_restore_filename=true;
 		mHandler.sendEmptyMessage(Threads.MACT_L9SELECTFILENAMETORESTORE);
 		try {

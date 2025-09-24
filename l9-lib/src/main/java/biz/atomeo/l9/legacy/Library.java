@@ -208,7 +208,7 @@ public class Library {
 //	};
 //
 	byte[] fileLoadGame(String path) {
-		byte resbuff[]=fileLoadToArray(path);
+		byte[] resbuff = fileLoadToArray(path);
 		//if (resbuff!=null) GameFullPathName=path;
 		return resbuff;
 	}
