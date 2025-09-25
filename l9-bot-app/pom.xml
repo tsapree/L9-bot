@@ -44,6 +44,12 @@
         </dependency>
 
         <dependency>
+            <groupId>biz.atomeo.l9</groupId>
+            <artifactId>l9-lib</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-springboot-longpolling-starter</artifactId>
             <version>9.1.0</version>
@@ -73,6 +79,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal> <!-- Это цель для создания исполняемого JAR/WAR -->
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <skip>false</skip>
                     <excludes>
