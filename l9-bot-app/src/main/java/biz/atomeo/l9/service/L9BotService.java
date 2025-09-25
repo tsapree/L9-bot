@@ -21,13 +21,18 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
     private final TelegramClient telegramClient;
     private final String token;
 
-    private L9GameService l9GameService = null;
+    private final L9ReplyService l9ReplyService;
 
     public L9BotService(
             @Value("${botToken}")
-            String token) {
+            String token,
+            SessionProvider sessionProvider,
+            L9BotStateProvider l9BotState,
+            L9ReplyService l9ReplyService) {
         this.token = token;
         telegramClient = new OkHttpTelegramClient(token);
+
+        this.l9ReplyService = l9ReplyService;
     }
 
     @Override
@@ -44,20 +49,20 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
     public void consume(Update update) {
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
-            // Set variables
-            String message_text = update.getMessage().getText();
-            long chat_id = update.getMessage().getChatId();
-            log.info("Get msg from user:"+message_text);
-            String generatedMessage = doL9Stuff(message_text);
-            log.info("Send msg to user:"+generatedMessage);
+            String command = update.getMessage().getText();
+            Long chatId = update.getMessage().getChatId();
+            log.info("Request from chatId [{}]=[{}]", chatId, command);
+
+            String generatedMessage = l9ReplyService.generateAnswer(chatId, command);
 
             SendMessage message = SendMessage // Create a message object
                     .builder()
-                    .chatId(chat_id)
+                    .chatId(chatId)
                     .text(generatedMessage)
                     .build();
 
             try {
+                log.info("Response to chatId [{}]=[{}]", chatId, generatedMessage);
                 telegramClient.execute(message); // Sending our message object to user
             } catch (TelegramApiException e) {
                 log.error("Error sending message", e);
@@ -68,19 +73,5 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
     @AfterBotRegistration
     public void afterRegistration(BotSession botSession) {
         log.info("Registered bot running state is: " + botSession.isRunning());
-    }
-
-    private String doL9Stuff(String userCommand) {
-        L9Request request = L9Request.builder()
-                .command(userCommand)
-                .build();
-        //TODO: хранить в будущем для каждого юзера, сейчас пока для теста один экземпляр всего
-        L9GameState l9GameState = new L9GameState();
-        if (l9GameService == null) {
-            request.setCommand("");
-            l9GameService = L9GameStarter.buildGame(L9Game.EMERALD_ISLE);
-        }
-        L9Response response = l9GameService.doStep(request, l9GameState);
-        return response.getMessage();
     }
 }

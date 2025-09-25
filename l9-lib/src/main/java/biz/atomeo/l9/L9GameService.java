@@ -1,9 +1,7 @@
 package biz.atomeo.l9;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import static biz.atomeo.l9.legacy.L9.*;
 
@@ -92,8 +90,6 @@ public class L9GameService {
 
         @Override
         public void flush() {
-            //System.out.println(sb.toString());
-            //sb.delete(0, sb.length());
         }
 
         public String getMessage() {
