@@ -2,6 +2,7 @@ package biz.atomeo.l9.service;
 
 import biz.atomeo.l9.L9Game;
 import biz.atomeo.l9.config.L9AppProperties;
+import biz.atomeo.l9.dto.GameInfoDTO;
 import biz.atomeo.l9.error.L9Exception;
 import biz.atomeo.l9.utils.FileIOUtils;
 import jakarta.annotation.PostConstruct;
@@ -31,20 +32,13 @@ public class L9GameFilesProvider {
     @Autowired
     private L9AppProperties l9AppProperties;
 
-    @PostConstruct
-    public void afterStart() throws L9Exception {
-        log.info("GET CONFIG: {}", l9AppProperties.getGames().get("EMERALD_ISLE").getArchive());
-        l9AppProperties.getGames().forEach((key, value) -> {
-            try {
-                log.info("prepare {}", key);
-                checkAndPrepareGameFile(value.getPath(), value.getArchive(), value.getPath());
-            } catch (L9Exception e) {
-                //
-            }
-        });
-    }
-
     public String getGamePath(L9Game l9Game) {
+        GameInfoDTO gi = l9AppProperties.getGames().get(l9Game.name());
+        try {
+            checkAndPrepareGameFile(gi.getPath(), gi.getArchive(), gi.getFolder());
+        } catch (L9Exception e) {
+            //
+        }
         return l9AppProperties.getGames().get(l9Game.name()).getPath();
     }
 
