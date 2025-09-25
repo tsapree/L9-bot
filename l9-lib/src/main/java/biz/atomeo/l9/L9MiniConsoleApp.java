@@ -54,7 +54,22 @@ public class L9MiniConsoleApp {
             }
         };
 
-        IOAdapter ioAdapter = L9MiniConsoleApp::loadResourceAsBytes;
+        IOAdapter ioAdapter = new IOAdapter() {
+            @Override
+            public byte[] loadFile(String fileName) {
+                return loadResourceAsBytes(fileName);
+            }
+
+            @Override
+            public String getGamePath(L9Game game) {
+                return "games/EMERALD.SNA";
+            }
+
+            @Override
+            public String getPicPath(L9Game game) {
+                return null;
+            }
+        };
 
         connector = new L9BotConnector(textOutputAdapter, inputAdapter, ioAdapter);
     }
