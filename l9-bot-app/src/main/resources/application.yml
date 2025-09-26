@@ -1,0 +1,14 @@
+
+
+l9:
+  version: 0.0.1
+  games:
+    EMERALD_ISLE:
+      path: level9/SNA/V2/EMERALD.SNA
+      archive: level9.zip
+      folder: level9
+    WORM_PC:
+      path: worm-pc/WORM.DAT
+      pic: worm-pc/WORM.CGA
+      archive: worm-pc.zip
+      folder: worm-pc

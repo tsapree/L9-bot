@@ -16,10 +16,9 @@ public class L9GameService {
     //TODO: change it, it's lame
     private final L9Request l9request = new L9Request();
 
-    public L9GameService(L9Game l9game) {
+    public L9GameService(L9Game l9game, IOAdapter ioAdapter) {
         this.l9game = l9game;
 
-        IOAdapter ioAdapter = L9GameService::loadResourceAsBytes;
         InputAdapter inputAdapter = new InputAdapter() {
             @Override
             public String inputCommand() {
@@ -35,7 +34,7 @@ public class L9GameService {
         };
         connector = new L9BotConnector(textOutputAdapter, inputAdapter, ioAdapter);
 
-        if (!connector.LoadGame(l9game.getGamePath(), l9game.getPicturesPath())) {
+        if (!connector.LoadGame(ioAdapter.getGamePath(l9game), ioAdapter.getPicPath(l9game))) {
             throw new RuntimeException("Failed to load game.");
         }
     }
@@ -98,15 +97,4 @@ public class L9GameService {
             return message;
         }
     };
-
-    private static byte[] loadResourceAsBytes(String resourcePath) {
-        try (InputStream is = L9MiniConsoleApp.class.getClassLoader().getResourceAsStream(resourcePath)) {
-            if (is == null) {
-                throw new IllegalArgumentException("Resource not found: " + resourcePath);
-            }
-            return is.readAllBytes();
-        } catch (IOException e) {
-            return null;
-        }
-    }
 }
