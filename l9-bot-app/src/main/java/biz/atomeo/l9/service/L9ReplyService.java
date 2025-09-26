@@ -18,25 +18,17 @@ import java.util.regex.Pattern;
 @Slf4j
 public class L9ReplyService {
 
-    private final SessionProvider sessionProvider;
-    private final L9BotStateProvider l9BotState;
-
     //TODO: is commands need any symbols more?
-    private final Pattern USER_COMMAND_PATTERN = Pattern.compile("^[0-9A-Za-z .,]{1,100}$");
+    private final Pattern USER_COMMAND_PATTERN = Pattern.compile("^[0-9A-Za-z .,#]{1,100}$");
 
-    public String generateAnswer(Long chatId, String command) {
-        if (!l9BotState.isBotActive()) return "Sorry, application is unavailable right now.";
-
+    public String generateAnswer(SessionDTO session, String command) {
         try {
-            SessionDTO session = sessionProvider.getSession(chatId);
-
             L9GameState l9GameState = session.getGameState();
             //TODO: to save memory on each user need to refactor L9GameService
             L9GameService l9GameService = session.getGameService();
 
             String response = doL9Stuff(command, l9GameState, l9GameService);
 
-            sessionProvider.updateSession(chatId, session);
             return response;
         } catch (L9Exception e) {
             log.error("Error generating message:", e);

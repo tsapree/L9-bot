@@ -21,18 +21,16 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
     private final TelegramClient telegramClient;
     private final String token;
 
-    private final L9ReplyService l9ReplyService;
+    private final ChatService chatService;
 
     public L9BotService(
             @Value("${botToken}")
             String token,
-            SessionProvider sessionProvider,
-            L9BotStateProvider l9BotState,
-            L9ReplyService l9ReplyService) {
+            ChatService chatService) {
         this.token = token;
         telegramClient = new OkHttpTelegramClient(token);
 
-        this.l9ReplyService = l9ReplyService;
+        this.chatService = chatService;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
             Long chatId = update.getMessage().getChatId();
             log.info("Request from chatId [{}]=[{}]", chatId, command);
 
-            String generatedMessage = l9ReplyService.generateAnswer(chatId, command);
+            String generatedMessage = chatService.generateAnswer(chatId, command);
 
             SendMessage message = SendMessage // Create a message object
                     .builder()

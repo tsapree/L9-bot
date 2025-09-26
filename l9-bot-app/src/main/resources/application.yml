@@ -1,6 +1,7 @@
 
 
 l9:
+  version: 0.0.1
   games:
     EMERALD_ISLE:
       path: level9/SNA/V2/EMERALD.SNA
