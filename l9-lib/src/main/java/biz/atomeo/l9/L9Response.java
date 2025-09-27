@@ -2,6 +2,8 @@ package biz.atomeo.l9;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -10,6 +12,6 @@ import lombok.*;
 public class L9Response {
     private L9Phase phase;
     private String status;
-    private String picture;
+    private List<String> pictures;
     private String message;
 }

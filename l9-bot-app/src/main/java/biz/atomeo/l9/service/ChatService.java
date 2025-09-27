@@ -2,6 +2,7 @@ package biz.atomeo.l9.service;
 
 import biz.atomeo.l9.L9Game;
 import biz.atomeo.l9.constants.ChatState;
+import biz.atomeo.l9.dto.AnswerDTO;
 import biz.atomeo.l9.dto.SessionDTO;
 import biz.atomeo.l9.error.L9Exception;
 import lombok.RequiredArgsConstructor;
@@ -22,31 +23,36 @@ public class ChatService {
     @Value("${l9.version}")
     private String version;
 
-    public String generateAnswer(Long chatId, String command) {
-        if (!botState.isBotActive()) return "Sorry, application is unavailable right now.";
+    public AnswerDTO generateAnswer(Long chatId, String command) {
+        if (!botState.isBotActive()) return AnswerDTO.builder()
+                .answerText("Sorry, application is unavailable right now.")
+                .build();
 
         try {
             SessionDTO session = sessionProvider.getSession(chatId);
 
-            String response = doCommand(session, command);
+            AnswerDTO response = doCommand(session, command);
 
             sessionProvider.updateSession(chatId, session);
             return response;
         } catch (L9Exception e) {
             log.error("Error generating message:", e);
-            return "Sorry, something went wrong.";
+            return AnswerDTO.builder()
+                    .answerText("Sorry, something went wrong.")
+                    .build();
         }
     }
 
-    private String doCommand(SessionDTO session, String command) {
+    private AnswerDTO doCommand(SessionDTO session, String command) {
         switch (session.getChatState()) {
             case INIT:
                 session.setChatState(ChatState.CHOOSE_GAME);
-                return String.format("""
+                return AnswerDTO.builder()
+                        .answerText(String.format("""
                        Welcome to L9 Games Bot v%s!\s
                        \s
-                       """, version)
-                        + toChooseGame(session);
+                       """, version) + toChooseGame(session).getAnswerText())
+                        .build();
             case PLAYING_GAME:
                 return l9ReplyService.generateAnswer(session, command);
             case CHOOSE_GAME:
@@ -59,16 +65,16 @@ public class ChatService {
         }
     }
 
-    private String toChooseGame(SessionDTO session) {
+    private AnswerDTO toChooseGame(SessionDTO session) {
         session.setChatState(ChatState.CHOOSE_GAME);
-        return """
+        return AnswerDTO.builder().answerText("""
                 Please choose game to play:\s
                 1. Emerald Isle\s
                 2. Worm in Paradise\s
-                """;
+                """).build();
     }
 
-    private String toPlayingGame(SessionDTO session, String command) throws L9Exception{
+    private AnswerDTO toPlayingGame(SessionDTO session, String command) throws L9Exception{
         switch (command) {
             case "1":
                 gameFactory.startGame(session, L9Game.EMERALD_ISLE);

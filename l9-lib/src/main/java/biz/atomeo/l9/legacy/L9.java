@@ -3011,44 +3011,41 @@ GFX_V3C          320 x 96             no
     private boolean getinstruction(int[] a5) {
 		int d7 = l9memory[a5[0]++]&0xff;
 		if ((d7&0xc0) != 0xc0) {
-			switch ((d7>>6)&3)
-			{
-			case 0: sdraw(d7); break;
-			case 1: smove(d7); break;
-			case 2: sgosub(d7,a5); break;
+			switch ((d7>>6)&3) {
+                case 0: sdraw(d7); break;
+                case 1: smove(d7); break;
+                case 2: sgosub(d7,a5); break;
 			}
 		} else if ((d7&0x38) != 0x38) {
-			switch ((d7>>3)&7)
-			{
-			case 0: draw(d7,a5); break;
-			case 1: _move(d7,a5); break;
-			case 2: icolour(d7); break;
-			case 3: size(d7); break;
-			case 4: gintfill(d7); break;
-			case 5: gosub(d7,a5); break;
-			case 6: reflect(d7); break;
+			switch ((d7>>3)&7) {
+                case 0: draw(d7,a5); break;
+                case 1: _move(d7,a5); break;
+                case 2: icolour(d7); break;
+                case 3: size(d7); break;
+                case 4: gintfill(d7); break;
+                case 5: gosub(d7,a5); break;
+                case 6: reflect(d7); break;
 			}
 		} else {
-			switch (d7&7)
-			{
-			case 0: notimp(); break;
-			case 1: gintchgcol(a5); break;
-			case 2: notimp(); break;
-			case 3: amove(a5); break;
-			case 4: opt(a5); break;
-			case 5: restorescale(); break;
-			case 6: notimp(); break;
-			case 7: return rts(a5);
+			switch (d7&7) {
+                case 0: notimp(); break;
+                case 1: gintchgcol(a5); break;
+                case 2: notimp(); break;
+                case 3: amove(a5); break;
+                case 4: opt(a5); break;
+                case 5: restorescale(); break;
+                case 6: notimp(); break;
+                case 7: return rts(a5);
 			}
 		}
 		return true;
 	}
 
     private void absrunsub(int d0) {
-		int a5[]={0};
+		int[] a5={0};
 		if (!findsub(d0,a5))
 			return;
-		while (getinstruction(a5));
+		while (getinstruction(a5)) {}
 	}
 
     private void show_picture(int pic) {
@@ -3084,6 +3081,7 @@ GFX_V3C          320 x 96             no
 			absrunsub(0);
 			if (!findsub(pic,gfxa5))
 				gfxa5[0] = -1;
+            else os_start_drawing(pic);
 		}
 	}
 
@@ -3092,7 +3090,7 @@ GFX_V3C          320 x 96             no
 		show_picture(workspace.vartable[getvar()]&0xffff);
 	}
 
-    void GetPictureSize(int[] width, int[] height) {
+    public void GetPictureSize(int[] width, int[] height) {
 		if (L9GameType == L9_V4) {
 			width[0] = 0;
 			height[0] = 0;
@@ -3102,7 +3100,7 @@ GFX_V3C          320 x 96             no
 		}
 	}
 
-    boolean RunGraphics() {
+    public boolean runGraphics() {
 		if (gfxa5[0]>0) {
 			if (!getinstruction(gfxa5))
 				gfxa5[0] = -1;
@@ -3407,6 +3405,7 @@ GFX_V3C          320 x 96             no
     public abstract byte[] os_load_file();
     public abstract void os_graphics(int mode);
     public abstract void os_cleargraphics();
+    public abstract void os_start_drawing(int pic);
     public abstract void os_setcolour(int colour, int index);
     public abstract void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2);
     public abstract void os_fill(int x, int y, int colour1, int colour2);

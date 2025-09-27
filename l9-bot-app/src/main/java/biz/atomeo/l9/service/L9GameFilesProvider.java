@@ -5,7 +5,6 @@ import biz.atomeo.l9.config.L9AppProperties;
 import biz.atomeo.l9.dto.GameInfoDTO;
 import biz.atomeo.l9.error.L9Exception;
 import biz.atomeo.l9.utils.FileIOUtils;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,9 @@ public class L9GameFilesProvider {
     @Value("${gamesDir}")
     private String gamesDirectory;
 
+    @Value("${picturesDir}")
+    private String picturesCacheDirectory;
+
     @Value("${l9source}")
     private String l9source;
 
@@ -39,11 +41,30 @@ public class L9GameFilesProvider {
         } catch (L9Exception e) {
             //
         }
-        return l9AppProperties.getGames().get(l9Game.name()).getPath();
+        return l9AppProperties
+                .getGames()
+                .get(l9Game.name())
+                .getPath();
     }
 
     public String getPicturePath(L9Game l9Game) {
-        return l9AppProperties.getGames().get(l9Game.name()).getPic();
+        return l9AppProperties
+                .getGames()
+                .get(l9Game.name())
+                .getPic();
+    }
+
+//    public String getPicturesCacheDirectory(L9Game l9Game) {
+//        return picturesCacheDirectory+l9AppProperties
+//                .getGames()
+//                .get(l9Game.name())
+//                .getFolder();
+//    }
+
+    public String getPicturesCacheFilename(L9Game l9Game, int picNumber) {
+        String pf = picturesCacheDirectory+l9Game.name()+"_pic"+picNumber+".gif";
+        log.info("pic cache path="+pf);
+        return pf;
     }
 
     public byte[] readGameFile(String filename) throws L9Exception {
