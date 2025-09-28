@@ -30,4 +30,8 @@ public class InMemorySessionProvider implements SessionProvider {
     public void updateSession(Long chatId, SessionDTO sessionDTO) throws L9Exception {
         // no need yet
     }
+
+    public int getSessionsCount() {
+        return sessions.size();
+    }
 }
