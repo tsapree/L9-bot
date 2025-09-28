@@ -1,6 +1,7 @@
 package biz.atomeo.l9.service;
 
 import biz.atomeo.l9.*;
+import biz.atomeo.l9.dto.AnswerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,19 @@ import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsume
 import org.telegram.telegrambots.longpolling.starter.AfterBotRegistration;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+
+import java.io.File;
 
 @Service
 @Slf4j
@@ -51,20 +61,50 @@ public class L9BotService implements SpringLongPollingBot, LongPollingSingleThre
             Long chatId = update.getMessage().getChatId();
             log.info("Request from chatId [{}]=[{}]", chatId, command);
 
-            String generatedMessage = chatService.generateAnswer(chatId, command);
+            AnswerDTO generatedMessage = chatService.generateAnswer(chatId, command);
 
-            SendMessage message = SendMessage // Create a message object
+            //send picture(s) in separate msg
+            if (generatedMessage.getPicturesFilenames() != null) {
+                for (String filename : generatedMessage.getPicturesFilenames()) {
+                    if (L9BotConnector.GIF_ANIMATION) {
+                        sendMsg(chatId, SendAnimation
+                                .builder()
+                                .chatId(chatId)
+                                .animation(new InputFile(new File(filename)))
+                                .build());
+                    } else {
+                        sendMsg(chatId, SendPhoto
+                                .builder()
+                                .chatId(chatId)
+                                .photo(new InputFile(new File(filename)))
+                                .build());
+                    }
+                }
+            }
+
+            //send text
+            sendMsg(chatId, SendMessage
                     .builder()
                     .chatId(chatId)
-                    .text(generatedMessage)
-                    .build();
+                    .text(generatedMessage.getAnswerText())
+                    .build());
+        }
+    }
 
-            try {
-                log.info("Response to chatId [{}]=[{}]", chatId, generatedMessage);
-                telegramClient.execute(message); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                log.error("Error sending message", e);
+    private <T> void sendMsg(long chatId, T msg) {
+        try {
+            if (msg instanceof SendAnimation) {
+                log.info("SendAnimation to chatId [{}]", chatId);
+                telegramClient.execute((SendAnimation)msg);
+            } else if (msg instanceof SendPhoto) {
+                log.info("SendPhoto to chatId [{}]", chatId);
+                telegramClient.execute((SendPhoto)msg);
+            } else if (msg instanceof SendMessage) {
+                log.info("SendMessage to chatId [{}]: {}", chatId, ((SendMessage) msg).getText());
+                telegramClient.execute((SendMessage)msg);
             }
+        } catch (TelegramApiException e) {
+            log.error("Error sending message", e);
         }
     }
 

@@ -20,6 +20,7 @@ public class InMemorySessionProvider implements SessionProvider {
         //TODO: in future need to save and restore states in some storage
         return sessions.computeIfAbsent(chatId,
                 chatId1 -> SessionDTO.builder()
+                    .chatState(ChatState.INIT)
                     .chatId(chatId)
                     .build()
         );

@@ -31,7 +31,7 @@ public class L9implement extends L9 {
 	byte[] PicBuff=null;
     int[] PicColorBuff=null;
     Bitmap bm=null;
-    int L9BitmapType=0;
+    int l9BitmapType =0;
     //L9Picture pic_bitmap=null;
     boolean flgNeedToRepaint=false;
     int lastpic=-1;
@@ -156,8 +156,8 @@ public class L9implement extends L9 {
 		int[] pw={0};
 		int[] ph={0};
 		if (mode==2) {
-			L9BitmapType = l9bitmap.DetectBitmaps(lib);
-			if (L9BitmapType==L9Bitmap.NO_BITMAPS) mode=0;
+			//l9BitmapType = L9Bitmap.detectBitmaps(ioAdapter);
+			if (l9BitmapType == L9Bitmap.NO_BITMAPS) mode=0;
 		};
 		PicMode = mode;
 		if (mode==0) mHandler.sendEmptyMessage(Threads.MACT_GFXOFF);
@@ -185,7 +185,14 @@ public class L9implement extends L9 {
 		if (PicMode==0 || PicMode==2 || PicBuff==null /*|| iApV->iPicturesEnabled==EFalse*/) return;
 		L9_FillCount=0; //�������� ��������, ���� ��� �����������.
 		for (int i=0;i<PicHeight*PicWidth;i++) PicBuff[i]=0;
-	};
+	}
+
+    @Override
+    public void os_start_drawing(int pic) {
+
+    }
+
+    ;
 
     @Override
     public void os_show_bitmap(int pic, int x, int y) {
@@ -193,24 +200,26 @@ public class L9implement extends L9 {
 			lastpic=-1;
 			return;
 		};
+        L9Picture l9picture = null;
 		if (pic!=lastpic || PicWidth==0 || PicHeight==0) {
 			lastpic=pic;
-			if (l9bitmap.DecodeBitmap(lib, L9BitmapType, pic, x, y)) {
-				PicWidth=l9bitmap.l9picture.width;
-				PicHeight=l9bitmap.l9picture.height;
+            //l9picture = L9Bitmap.decodeBitmap(lib, l9BitmapType, pic, x, y);
+			if (l9picture != null) {
+				PicWidth=l9picture.width;
+				PicHeight=l9picture.height;
 				if ((PicWidth>0) && (PicHeight>0)) L9UpdateGfxSize();
 			};
 		};
 		
-		if (l9bitmap.l9picture!=null) {
-			int max_x=l9bitmap.l9picture.width;    //if (max_x>PicWidth)  max_x=PicWidth;
-			int max_y=l9bitmap.l9picture.height;   //if (max_y>PicHeight) max_y=PicHeight;
-			int max_c=l9bitmap.l9picture.npalette; if (max_c>32) max_c=32;
+		if (l9picture != null) {
+			int max_x=l9picture.width;    //if (max_x>PicWidth)  max_x=PicWidth;
+			int max_y=l9picture.height;   //if (max_y>PicHeight) max_y=PicHeight;
+			int max_c=l9picture.npalette; if (max_c>32) max_c=32;
 			for (int c=0; c<max_c; c++)
-				SelectedPalette[c] = l9bitmap.l9picture.palette[c]|0xff000000;
+				SelectedPalette[c] = l9picture.palette[c]|0xff000000;
 			for (int j=0; j<max_y; j++)
 				for (int i=0; i<max_x; i++)
-					PicBuff[j*PicWidth+i]=(byte)(l9bitmap.l9picture.bitmap[j*l9bitmap.l9picture.width+i]&0x1f);
+					PicBuff[j*PicWidth+i]=(byte)(l9picture.bitmap[j*l9picture.width+i]&0x1f);
 			flgNeedToRepaint=true;
 			Threads.gfx_ready=true;
 		};
@@ -243,29 +252,6 @@ public class L9implement extends L9 {
 		return PicBuff[y*PicWidth+x];
 	};
 
-	
-	/*
-	 * �������� ���������� ��� ��������� �����
-	 * function line(x0, x1, y0, y1)
-	     int deltax := abs(x1 - x0)
-	     int deltay := abs(y1 - y0)
-	     int error := 0
-	     int y := y0
-	     for x from x0 to x1
-	         plot(x,y)
-	         error := error + deltay
-	         if 2 * error >= deltax
-	             y := y + 1
-	             error := error - deltax
-	 * 
-	 */
-	
-	//
-	//y=k*x+b
-	//k=(y2-y1)/(x2-x1)
-	//b=y-k*x
-	//
-
     @Override
     public void os_drawline(int x1, int y1, int x2, int y2, int colour1, int colour2) {
 		if (PicMode==0 || PicMode==2) return;
@@ -288,7 +274,6 @@ public class L9implement extends L9 {
 					err-=sx;
 				};
 			};
-			//����������� ����� � �������������� ���������� �������.
 			L9Plot(x2, y2, colour1, colour2);
 		} else if (sy>sx) {
 			x0=x1;
@@ -300,7 +285,6 @@ public class L9implement extends L9 {
 					err-=sy;
 				};
 			};
-			//����������� ����� � �������������� ���������� �������.
 			L9Plot(x2, y2, colour1, colour2);
 		};
 	};
@@ -373,21 +357,16 @@ public class L9implement extends L9 {
 		else if (PicMode==1) {
 			if (fastShowPic) {
 				fastShowPic=false;
-				while ((L9Fill_Step()>0) || RunGraphics()) j++;
+				while ((L9Fill_Step()>0) || runGraphics()) j++;
 			} else {
 				int steps;
 				if (th!=null && th.activity!=null) steps= th.activity.pref_picspeed;
 				else steps=10;
 				for (int i=0; i<steps; i++)
 					if (L9Fill_Step()>0) j++;
-					else if (RunGraphics()) j++;	//���� ���������� fill - ������ ��������� ������ ��������
-			};
-		} else {
-			//����:
-			//			if (flgNeedToRepaint) j++;
-			//			flgNeedToRepaint=false;
-			//
-		};
+					else if (runGraphics()) j++;	//���� ���������� fill - ������ ��������� ������ ��������
+			}
+		}
 
 		if (flgNeedToRepaint) j++;
 		flgNeedToRepaint=false;

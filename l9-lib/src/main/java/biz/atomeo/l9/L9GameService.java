@@ -1,15 +1,10 @@
 package biz.atomeo.l9;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
 import static biz.atomeo.l9.legacy.L9.*;
 
 public class L9GameService {
-    //Хочу держать здесь все, что касается конкретной игры
-    // - файлы
-    // - настройки vm
-    //В идеале боту нужно будет по одному контейнеру для каждой игры. Независимо от количества юзеров
     private final L9BotConnector connector;
     private final L9Game l9game;
 
@@ -64,11 +59,11 @@ public class L9GameService {
             case L9StateWaitForKey -> L9Phase.WAITING_FOR_A_KEY;
             default -> null; //TODO: не должно быть такого, но на всякий
         };
-
         return L9Response.builder()
                 .phase(phase)
                 .status("Success")
                 .message(textOutputAdapter.getMessage())
+                .pictures((List<String>) connector.ioAdapter.popPictures())
                 .build();
     }
 

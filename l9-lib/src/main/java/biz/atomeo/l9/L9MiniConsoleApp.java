@@ -1,9 +1,12 @@
 package biz.atomeo.l9;
 
+import biz.atomeo.l9.legacy.L9Picture;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class L9MiniConsoleApp {
 
@@ -67,6 +70,31 @@ public class L9MiniConsoleApp {
 
             @Override
             public String getPicPath(L9Game game) {
+                return null;
+            }
+
+            @Override
+            public boolean fileExist(String file) {
+                return false;
+            }
+
+            @Override
+            public byte[] fileLoadRelativeToArray(String file) {
+                return null;
+            }
+
+            @Override
+            public boolean isPictureCached(int picture) {
+                return false;
+            }
+
+            @Override
+            public void cachePicture(int picture, List<L9Picture> pictures) {
+
+            }
+
+            @Override
+            public Object popPictures() {
                 return null;
             }
         };
