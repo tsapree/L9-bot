@@ -122,7 +122,10 @@ public class L9BotConnector extends L9 {
 
     @Override
     public void os_start_drawing(int pic) {
-        if (ioAdapter.isPictureCached(pic)) mockDrawing = true;
+        if (picMode != 1) return;
+
+        //if picture found - no draw it
+        mockDrawing = ioAdapter.isPictureCached(pic);
         if (painter==null) return;
 
         List<L9Picture> pictures = new ArrayList<>();
@@ -131,7 +134,7 @@ public class L9BotConnector extends L9 {
             if (picCopy!=null) pictures.add(picCopy);
         }
 
-        if (!pictures.isEmpty()) {
+        if (!pictures.isEmpty() && !mockDrawing) {
             ioAdapter.cachePicture(pic, pictures);
         }
     }
@@ -174,7 +177,6 @@ public class L9BotConnector extends L9 {
 
     @Override
     public void os_show_bitmap(int pic, int x, int y) {
-        if (ioAdapter.isPictureCached(pic)) return;
 
         if (picMode ==0 || picMode ==1 ) {
             lastpic=-1;
@@ -183,6 +185,8 @@ public class L9BotConnector extends L9 {
 
         if (pic!=lastpic) {
             lastpic=pic;
+            if (ioAdapter.isPictureCached(pic)) return;
+
             L9Picture l9picture = L9Bitmap.decodeBitmap(ioAdapter, l9BitmapType, pic, x, y);
             if (l9picture!=null) {
                 ioAdapter.cachePicture(pic, List.of(l9picture));

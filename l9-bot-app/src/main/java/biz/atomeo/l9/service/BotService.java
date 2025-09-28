@@ -23,13 +23,13 @@ import java.io.File;
 
 @Service
 @Slf4j
-public class L9BotService implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
+public class BotService implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
     private final TelegramClient telegramClient;
     private final String token;
 
     private final ChatService chatService;
 
-    public L9BotService(
+    public BotService(
             @Value("${botToken}")
             String token,
             ChatService chatService) {

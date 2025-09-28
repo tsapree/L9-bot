@@ -48,6 +48,7 @@ package biz.atomeo.l9.legacy;
 //if (var) -> if(var!=0)
 //*getvar()->workspace.vartable[getvar()]&0xffff
 
+import biz.atomeo.l9.constants.L9GameType;
 import biz.atomeo.l9.graphics.L9Bitmap;
 import biz.atomeo.l9.graphics.PictureSize;
 
@@ -58,22 +59,15 @@ abstract public class L9 {
 	public static final int LISTAREASIZE = 0x800;
 	public static final int STACKSIZE = 1024;
 	
-	//#define IBUFFSIZE 500
-	private static final int IBUFFSIZE = 500; 
+	private static final int IBUFFSIZE = 500;
 
-	//#define FIRSTLINESIZE 96
 	private static final int FIRSTLINESIZE = 96;
 	
-	int showtitle=1;
+	private int showtitle=1;
 	
-	//GameState workspace;
-	GameState workspace;
-	//L9UINT16 randomseed;
-	short randomseed;
-	//L9UINT16 constseed=0;
-	short constseed=0;
-	//L9BOOL Running;
-	//boolean Running;
+    GameState workspace;
+	private short randomseed;
+	private short constseed=0;
 	public int L9State;
 	public static final int L9StateStopped=0;
 	public static final int L9StateRunning=1;
@@ -83,27 +77,27 @@ abstract public class L9 {
 	public static final int L9StateWaitForKey=6; //TODO
 	public static final int L9StateKeyReady=7;   //TODO
 
-	//char LastGame[MAX_PATH];
 	public String LastGame;
-	
-	//char FirstLine[FIRSTLINESIZE];
-	char[] FirstLine;
-	int FirstLinePos=0;
-	int FirstPicture=-1;
+	private char[] FirstLine;
+	private int FirstLinePos=0;
+	private int FirstPicture=-1;
 	
 
 //// "L901"
 //#define L9_ID 0x4c393031
 //
-	static final int RAMSAVESLOTS = 10;
+	private static final int RAMSAVESLOTS = 10;
 //
 //
 // Enumerations 
 //enum L9GameTypes {L9_V1,L9_V2,L9_V3,L9_V4};
+    /*
 	private static final int L9_V1=1;
 	private static final int L9_V2=2;
 	private static final int L9_V3=3;
 	private static final int L9_V4=4;
+
+     */
 //enum L9MsgTypes { MSGT_V1, MSGT_V2 };
 int MSGT_V1=1;
 int MSGT_V2=2;
@@ -125,97 +119,97 @@ GFX_V3C          320 x 96             no
 
 // Global Variables
 //*pictureaddress=NULL
-	int pictureaddress=-1;
-	int picturedata=-1;
-	int picturesize;	
-	byte[] l9memory;
-	int startfile;
-	int filesize;
-	int startdata;
-	int datasize;
-	int listarea;
+	private int pictureaddress=-1;
+    private int picturedata=-1;
+    private int picturesize;
+    byte[] l9memory;
+    private int startfile;
+    private int filesize;
+    private int startdata;
+    private int datasize;
+    int listarea;
 
-	int[] L9Pointers;
-	int absdatablock;
-	int list2ptr;
-	int list3ptr;
-	int list9startptr;
-	int acodeptr;
-	int startmd;
-	int endmd;
-	int endwdp5;
-	int wordtable;
-	int dictdata;
-	int defdict;
-	int dictdatalen;
-	int startmdV2;
+    private int[] L9Pointers;
+    private int absdatablock;
+    private int list2ptr;
+    private int list3ptr;
+    private int list9startptr;
+    int acodeptr;
+    private int startmd;
+    private int endmd;
+    private int endwdp5;
+    private int wordtable;
+    private int dictdata;
+    private int defdict;
+    private int dictdatalen;
+    private int startmdV2;
 //
-	int wordcase;
-	int unpackcount;
-	int[] unpackbuf;
-	int dictptr;
-	byte[] threechars;
-	int L9GameType;
-	int L9MsgType;
+    private int wordcase;
+    private int unpackcount;
+    private int[] unpackbuf;
+    private int dictptr;
+    private byte[] threechars;
+    private L9GameType l9GameType;
+    private int L9MsgType;
 //
-	SaveStruct[] ramsavearea;
+    private SaveStruct[] ramsavearea;
 //
-	L9Bitmap l9bitmap;
+    L9Bitmap l9bitmap;
+
+    private char[] obuff;
+    private int wordcount;
+    private char[] ibuff;
+    private String ibuffstr;
+    private int ibuffptr;
+
+    private String InputString;
+    private byte[] scriptArray=null;
+    private int scriptArrayIndex=0;
 	
-	char[] obuff;
-	int wordcount;
-	char[] ibuff;
-	String ibuffstr;
-	int ibuffptr;
-	
-	String InputString;
-	byte[] scriptArray=null;
-	int scriptArrayIndex=0;
-	
 //
-	boolean Cheating=false;
-	int CheatWord;
-	GameState CheatWorkspace;
+    private boolean Cheating=false;
+    private int CheatWord;
+    private GameState CheatWorkspace;
 //
-	int reflectflag,scale,gintcolour,option;
-	int l9textmode=0;
-	int drawx=0,drawy=0;
-	int screencalled=0;
-	int[] gfxa5={-1};
+    private int reflectflag,scale,gintcolour,option;
+    private int l9textmode=0;
+    private int drawx=0,drawy=0;
+    private int screencalled=0;
+    private int[] gfxa5={-1};
 //Bitmap* bitmap=NULL;
-	
-	int gfx_mode=GFX_V2;
+
+    private int gfx_mode=GFX_V2;
 	
 	public static final int GFXSTACKSIZE=100;
+
+    private int[] GfxA5Stack;
+    private int GfxA5StackPos=0;
+    private int[] GfxScaleStack;
+    private int GfxScaleStackPos=0;
 	
-	int[] GfxA5Stack;
-	int GfxA5StackPos=0;
-	int[] GfxScaleStack;
-	int GfxScaleStackPos=0;
-	
 //
-	char lastchar='.';
-	char lastactualchar=0;
-	int d5;
+    private char lastchar='.';
+    private char lastactualchar=0;
+    private int d5;
 //
-	int codeptr;	// instruction codes - pointer 
-	int code;		// instruction codes - code
+    int codeptr;	// instruction codes - pointer
+    private int code;		// instruction codes - code
 //
-	int list9ptr;
+    private int list9ptr;
 //
-	int unpackd3;
+    private int unpackd3;
 //
-	short[] exitreversaltable = {0x00,0x04,0x06,0x07,0x01,0x08,0x02,0x03,0x05,0x0a,0x09,0x0c,0x0b,0xff,0xff,0x0f};
+    private short[] exitreversaltable = {0x00,0x04,0x06,0x07,0x01,0x08,0x02,0x03,0x05,0x0a,0x09,0x0c,0x0b,0xff,0xff,0x0f};
 //
 	//L9UINT16 gnostack[128];
 	//L9BYTE gnoscratch[32];
-	int[] gnostack;
-	short[] gnoscratch;
-	short searchdepth;
-	short inithisearchpos;
-	short gnosp;
-	short object;
-	short numobjectfound;
+    private int[] gnostack;
+    private short[] gnoscratch;
+    private short searchdepth;
+    private short inithisearchpos;
+    private short gnosp;
+    private short object;
+    private short numobjectfound;
 	
 	//struct L9V1GameInfo
 	//{
@@ -230,7 +224,7 @@ GFX_V3C          320 x 96             no
 	//	0x15,0x5d,252,-0x3e70, 0x0000,-0x3d30,-0x3ca0, 0x0100,0x4120,-0x3b9d,0x3988, /* Lords of Time */
 	//	0x15,0x6c,284,-0x00f0, 0x0000,-0x0050,-0x0050,-0x0050,0x0300, 0x1930,0x3c17, /* Snowball */
 	//};
-	int[][] L9V1Games =
+    private int[][] L9V1Games =
 	{
 		{0x1a,0x24,301, 0x0000,-0x004b, 0x0080,-0x002b, 0x00d0,0x03b0, 0x0f80,0x4857}, /* Colossal Adventure */
 		{0x20,0x3b,283,-0x0583, 0x0000,-0x0508,-0x04e0, 0x0000,0x0800, 0x1000,0x39d1}, /* Adventure Quest */
@@ -238,23 +232,23 @@ GFX_V3C          320 x 96             no
 		{0x15,0x5d,252,-0x3e70, 0x0000,-0x3d30,-0x3ca0, 0x0100,0x4120,-0x3b9d,0x3988}, /* Lords of Time */
 		{0x15,0x6c,284,-0x00f0, 0x0000,-0x0050,-0x0050,-0x0050,0x0300, 0x1930,0x3c17}, /* Snowball */
 	};
-	int L9V1Games_dictVal1=0;
-	int L9V1Games_dictVal2=1;
-	int L9V1Games_dictStart=2;
-	int L9V1Games_L9Ptrs=3;//,4,5,6,7; 
-	int L9V1Games_absData=8;
-	int L9V1Games_msgStart=9; 
-	int L9V1Games_msgLen=10;
-	
-	int L9V1Game = -1;
+    private int L9V1Games_dictVal1=0;
+    private int L9V1Games_dictVal2=1;
+    private int L9V1Games_dictStart=2;
+    private int L9V1Games_L9Ptrs=3;//,4,5,6,7;
+    private int L9V1Games_absData=8;
+    private int L9V1Games_msgStart=9;
+    private int L9V1Games_msgLen=10;
+
+    private int L9V1Game = -1;
 
 //vars added by tsap
-	int amessageV2_depth=0;
-	int amessageV25_depth=0;
-	int displaywordref_mdtmode=0;
+    private int amessageV2_depth=0;
+    private int amessageV25_depth=0;
+    private int displaywordref_mdtmode=0;
 
-	int cfvar,cfvar2; //for CODEFOLLOW
-	String[] CODEFOLLOW_codes = {
+    private int cfvar,cfvar2; //for CODEFOLLOW
+    private String[] CODEFOLLOW_codes = {
 	"Goto",
 	"intgosub",
 	"intreturn",
@@ -288,7 +282,7 @@ GFX_V3C          320 x 96             no
 	"ilins",
 	"ilins",
 	};
-	String[] CODEFOLLOW_functions = {
+    private String[] CODEFOLLOW_functions = {
 		"calldriver",
 		"L9Random",
 		"save",
@@ -296,7 +290,7 @@ GFX_V3C          320 x 96             no
 		"clearworkspace",
 		"clearstack"
 	};
-	String[] CODEFOLLOW_drivercalls= {
+    private String[] CODEFOLLOW_drivercalls= {
 	"init",
 	"drivercalcchecksum",
 	"driveroswrch",
@@ -407,7 +401,7 @@ GFX_V3C          320 x 96             no
 		if ((c&128)!=0) lastchar=(c&=0x7f);
 		else if (c!=0x20 && c!=0x0d && (c<'\"' || c>='.'))
 		{
-			if (lastchar=='!' || lastchar=='?' || lastchar=='.') c=toupper(c);
+			if (lastchar=='!' || lastchar=='?' || lastchar=='.') c= toUpper(c);
 			lastchar=c;
 		}
 		// eat multiple CRs
@@ -415,7 +409,7 @@ GFX_V3C          320 x 96             no
 		{
 			os_printchar(c);
 			if (FirstLinePos < FIRSTLINESIZE-1)
-				FirstLine[FirstLinePos++]=tolower(c);
+				FirstLine[FirstLinePos++]= toLower(c);
 		}
 		lastactualchar=c;
 	}
@@ -458,11 +452,11 @@ GFX_V3C          320 x 96             no
     private void printautocase(int d0) {
 		if ((d0 & 128)!=0) printchar((char) d0);
 		else {
-			if (wordcase!=0) printchar(toupper((char)d0));
+			if (wordcase!=0) printchar(toUpper((char)d0));
 			else if (d5<6) printchar((char) d0);
 			else {
 				wordcase=0;
-				printchar(toupper((char)d0));
+				printchar(toUpper((char)d0));
 			}
 		}
 	}
@@ -1064,7 +1058,7 @@ GFX_V3C          320 x 96             no
 						if ((scandata.Size>MaxSize) && (scandata.Size>100)) {
 							Offset=i;
 							MaxSize=scandata.Size;
-							L9GameType=scandata.DriverV4?L9_V4:L9_V3;
+							l9GameType = scandata.DriverV4? L9GameType.L9_V4: L9GameType.L9_V3;
 						}
 					}
 				}
@@ -1394,10 +1388,10 @@ GFX_V3C          320 x 96             no
 		Offset=Scan();
 		if (Offset<0) {
 			Offset=ScanV2();
-			L9GameType=L9_V2;
+			l9GameType = L9GameType.L9_V2;
 			if (Offset<0) {
 				Offset=ScanV1();
-				L9GameType=L9_V1;
+				l9GameType = L9GameType.L9_V1;
 				if (Offset<0) {
 					error("\rUnable to locate valid Level 9 game in file: %s\r",filename);
 				 	return false;
@@ -1409,7 +1403,7 @@ GFX_V3C          320 x 96             no
 		datasize=filesize-Offset;
 
 	// setup pointers 
-		if (L9GameType==L9_V1) {
+		if (l9GameType == L9GameType.L9_V1) {
 			if (L9V1Game < 0) {
 				error("\rWhat appears to be V1 game data was found, but the game was not recognised.\rEither this is an unknown V1 game file or, more likely, it is corrupted.\r");
 				return false;
@@ -1425,7 +1419,7 @@ GFX_V3C          320 x 96             no
 		} else {
 			// V2,V3,V4 
 
-			hdoffset=L9GameType==L9_V2 ? 4 : 0x12;
+			hdoffset= l9GameType == L9GameType.L9_V2 ? 4 : 0x12;
 
 			for (i=0;i<12;i++) {
 				int d0=L9WORD(startdata+hdoffset+i*2);
@@ -1439,7 +1433,7 @@ GFX_V3C          320 x 96             no
 			acodeptr=L9Pointers[11];
 		}
 
-		switch (L9GameType) {
+		switch (l9GameType) {
 			case L9_V1: {
 				double a1;
 				startmd=acodeptr+L9V1Games[L9V1Game][L9V1Games_msgStart];
@@ -1489,8 +1483,8 @@ GFX_V3C          320 x 96             no
 				break;
 		};
 		
-		int pdata[]={-1};
-		int psize[]={0};
+		int[] pdata = {-1};
+		int[] psize = {0};
 
 		if (pictureaddress>=0) {
 			if (!findsubs(pictureaddress, picturesize, pdata, psize)) {
@@ -1521,8 +1515,8 @@ GFX_V3C          320 x 96             no
 	}*/
 
     private int movewa5d0() {
-		int ret=L9WORD(codeptr);
-		codeptr+=2;
+		int ret = L9WORD(codeptr);
+		codeptr += 2;
 		return ret;
 	}
 
@@ -1581,14 +1575,14 @@ GFX_V3C          320 x 96             no
 	}
 
     private void messagec() {
-		if (L9GameType<=L9_V2)
+		if (l9GameType == L9GameType.L9_V1 || l9GameType == L9GameType.L9_V2)
 			printmessageV2(getcon());
 		else
 			printmessage(getcon());
 	}
 
     private void messagev() {
-		if (L9GameType<=L9_V2)
+		if (l9GameType == L9GameType.L9_V1 || l9GameType == L9GameType.L9_V2)
 			printmessageV2(workspace.vartable[getvar()]&0xffff);
 		else
 			printmessage(workspace.vartable[getvar()]&0xffff);
@@ -1905,7 +1899,7 @@ GFX_V3C          320 x 96             no
 
 		switch (d0) {
 			case 1:
-				if (L9GameType==L9_V1)
+				if (l9GameType == L9GameType.L9_V1)
 					StopGame();
 				else
 					calldriver();
@@ -1996,7 +1990,7 @@ GFX_V3C          320 x 96             no
 	}
 
     private int partword(char c) {
-		c=tolower(c);
+		c= toLower(c);
 
 		if (c==0x27 || c==0x2d) return 0;
 		if (c<0x30) return 1;
@@ -2017,7 +2011,7 @@ GFX_V3C          320 x 96             no
 
     private void checknumber() {
 		if (obuff[0]>=0x30 && obuff[0]<0x3a) {
-			if (L9GameType==L9_V4) {
+			if (l9GameType ==L9GameType.L9_V4) {
 				l9memory[list9ptr]=1;
 				L9SETWORD(list9ptr+1,readdecimal());
 				L9SETWORD(list9ptr+3,0);
@@ -2037,7 +2031,8 @@ GFX_V3C          320 x 96             no
 		workspace=CheatWorkspace.clone();
 		codeptr=acodeptr+workspace.codeptr;
 
-		if (!((L9GameType<=L9_V2) ? GetWordV2(CheatWord++) : GetWordV3(CheatWord++))) {
+		if (!((l9GameType == L9GameType.L9_V1 || l9GameType == L9GameType.L9_V2)
+                ? GetWordV2(CheatWord++) : GetWordV3(CheatWord++))) {
 			Cheating=false;
 			printstring("\rCheat failed.\r");
 			ibuffstr="";
@@ -2100,7 +2095,8 @@ GFX_V3C          320 x 96             no
 		} else if (stricmp(ibuff,"#dictionary")) {
 			CheatWord=0;
 			printstring("\r");
-			while ((L9GameType<=L9_V2) ? GetWordV2(CheatWord++) : GetWordV3(CheatWord++)) {
+			while ((l9GameType == L9GameType.L9_V1 || l9GameType == L9GameType.L9_V2)
+                    ? GetWordV2(CheatWord++) : GetWordV3(CheatWord++)) {
 				error("%s ",ibuffstr);
 				if ((CheatWord&0x1f)==0) error("\r");
 				if (os_stoplist() || L9StateRunning==L9StateStopped) break;
@@ -2110,7 +2106,7 @@ GFX_V3C          320 x 96             no
 		} else if (stricmp(ibuff,"#picture ",9)) {
 			int pic=sscanf(ibuff,9);
 			if (pic>=0) {
-				if (L9GameType==L9_V4)
+				if (l9GameType == L9GameType.L9_V4)
 					os_show_bitmap(pic,0,0);
 				else
 					show_picture(pic);
@@ -2136,7 +2132,7 @@ GFX_V3C          320 x 96             no
     private boolean IsInputChar (char c) {
 		if (c=='-' || c=='\'')
 			return true;
-		if ((L9GameType>=L9_V3) && (c=='.' || c==','))
+		if ((l9GameType == L9GameType.L9_V3 || l9GameType == L9GameType.L9_V4) && (c=='.' || c==','))
 			return true;
 		return isalnum(c);
 	}
@@ -2220,7 +2216,7 @@ GFX_V3C          320 x 96             no
 		do {
 			d0=ibuff[a6++];
 			if (partword((char)d0)==1) break;
-			d0=tolower((char)d0);
+			d0= toLower((char)d0);
 			obuff[a2++]=(char)d0;
 		} while (a2<0x1f);
 	/*ip06a */
@@ -2273,7 +2269,7 @@ GFX_V3C          320 x 96             no
 			//ip15 
 				do {
 					d6++;
-					d0=tolower((char)(threechars[a1++] & 0x7f));
+					d0= toLower((char)(threechars[a1++] & 0x7f));
 					d2=obuff[a0++];
 				} while (d0==d2);
 	
@@ -2304,14 +2300,20 @@ GFX_V3C          320 x 96             no
 		return true;
 	}
 
-
 	/* version 2 stuff hacked from bbc v2 files */
     private boolean IsDictionaryChar(char c) {
 		switch (c) {
-		case '?': case '-': case '\'': case '/': return true;
-		case '!': case '.': case ',': return true;
+		    case '?':
+            case '-':
+            case '\'':
+            case '/':
+                return true;
+		    case '!':
+            case '.':
+            case ',':
+                return true;
 		}
-		return isupper(c) || isdigit(c);
+		return isUpper(c) || isDigit(c);
 	};
 
     private boolean GetWordV2(int Word) {
@@ -2389,8 +2391,7 @@ GFX_V3C          320 x 96             no
 		while (ibuff[ibuffptr]==32) ++ibuffptr;
 
 		ptr=ibuffptr;
-		do
-		{
+		do {
 			while (ibuff[ptr]==32) ++ptr;
 			if (ibuff[ptr]==0) break;
 			(wordcount)++;
@@ -2416,7 +2417,7 @@ GFX_V3C          320 x 96             no
 
 				++ibuffptr;
 				if (!IsDictionaryChar((char)(x&0x7f))) x = 0;
-				if (tolower((char)(x&0x7f)) != tolower(a)) {
+				if (toLower((char)(x&0x7f)) != toLower(a)) {
 					while (x>0 && x<0x7f) x=(char)(l9memory[list0ptr++]&0xff);
 					if (x==0) {
 						do {
@@ -2452,7 +2453,7 @@ GFX_V3C          320 x 96             no
 
     private void input() {
 		
-		if (L9GameType == L9_V3 && FirstPicture >= 0) {
+		if (l9GameType == L9GameType.L9_V3 && FirstPicture >= 0) {
 			show_picture(FirstPicture);
 			FirstPicture = -1;
 		}
@@ -2464,7 +2465,7 @@ GFX_V3C          320 x 96             no
 		//os_flush();
 		
 		codeptr--;
-		if (L9GameType<=L9_V2) {
+		if (l9GameType == L9GameType.L9_V1 || l9GameType == L9GameType.L9_V2) {
 			if (inputV2()) { //FALSE IF NO COMMAND ENTERED
 				//L9BYTE *obuffptr=(L9BYTE*) obuff;
 				codeptr++;
@@ -2518,7 +2519,7 @@ GFX_V3C          320 x 96             no
 		if (--d1!=0) {
 			do {
 				d0=l9memory[a0];
-				if (L9GameType==L9_V4) {
+				if (l9GameType == L9GameType.L9_V4) {
 					if ((d0==0) && (l9memory[a0+1]==0)) {
 						skip=true;
 						break;
@@ -2647,7 +2648,7 @@ GFX_V3C          320 x 96             no
 	}
 
     private void detect_gfx_mode() {
-		if (L9GameType == L9_V3) {
+		if (l9GameType == L9GameType.L9_V3) {
 			/* These V3 games use graphics logic similar to the V2 games */
 			if (strstr(FirstLine,"price of magik") != 0)
 				gfx_mode = GFX_V3A;
@@ -2681,7 +2682,7 @@ GFX_V3C          320 x 96             no
 		int mode = 0;
 		
 		//if (L9GameType == L9_V3 && strlen(FirstLine) == 0)
-		if ((L9GameType == L9_V3) && (FirstLine[0]==0)) {
+		if ((l9GameType == L9GameType.L9_V3) && (FirstLine[0]==0)) {
 			if ((l9memory[codeptr++]&0xff)!=0)
 				codeptr++;
 			return;
@@ -2691,7 +2692,7 @@ GFX_V3C          320 x 96             no
 
 		l9textmode = l9memory[codeptr++]&0xff;
 		if (l9textmode!=0) {
-			if (L9GameType==L9_V4)
+			if (l9GameType ==L9GameType.L9_V4)
 				mode = 2;
 			else if (picturedata>=0)
 				mode = 1;
@@ -3052,7 +3053,7 @@ GFX_V3C          320 x 96             no
 	}
 
     private void show_picture(int pic) {
-		if ((L9GameType == L9_V3) && (FirstLine[0] == 0)) {
+		if ((l9GameType == L9GameType.L9_V3) && (FirstLine[0] == 0)) {
 			FirstPicture = pic;
 			return;
 		}
@@ -3096,7 +3097,7 @@ GFX_V3C          320 x 96             no
     public PictureSize getPictureSize() {
 		int width = 0;
         int height = 0;
-        if (L9GameType != L9_V4) {
+        if (l9GameType != L9GameType.L9_V4) {
 			width = (gfx_mode != GFX_V3C) ? 160 : 320;
 			height = (gfx_mode == GFX_V2) ? 128 : 96;
 		}

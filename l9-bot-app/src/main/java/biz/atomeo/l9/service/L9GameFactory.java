@@ -58,7 +58,7 @@ public class L9GameFactory {
                 public boolean isPictureCached(int pictureNumber) {
                     String picFileName = gameFilesProvider.getPicturesCacheFilename(game, pictureNumber);
                     pictures.add(picFileName);
-                    return false;
+                    return gameFilesProvider.isFileExists(picFileName);
                 }
 
                 @Override
