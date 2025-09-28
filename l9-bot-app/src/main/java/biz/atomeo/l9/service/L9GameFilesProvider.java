@@ -54,17 +54,16 @@ public class L9GameFilesProvider {
                 .getPic();
     }
 
-//    public String getPicturesCacheDirectory(L9Game l9Game) {
-//        return picturesCacheDirectory+l9AppProperties
-//                .getGames()
-//                .get(l9Game.name())
-//                .getFolder();
-//    }
-
     public String getPicturesCacheFilename(L9Game l9Game, int picNumber) {
         String pf = picturesCacheDirectory+l9Game.name()+"_pic"+picNumber+".gif";
-        log.info("pic cache path="+pf);
+        log.debug("pic cache path {}", pf);
         return pf;
+    }
+
+    public boolean isFileExists(String path) {
+        boolean exist = FileIOUtils.isFileExists(path);
+        log.debug("file {} {}", path, exist ? "exist" : "not found");
+        return exist;
     }
 
     public byte[] readGameFile(String filename) throws L9Exception {

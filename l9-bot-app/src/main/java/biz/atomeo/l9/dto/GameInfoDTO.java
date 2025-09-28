@@ -11,5 +11,5 @@ public class GameInfoDTO {
     private final String archive;
     private final String folder;
     private final String path;
-    private String pic;
+    private final String pic;
 }
