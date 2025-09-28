@@ -1,0 +1,68 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: L9Bot API
+  description: L9Bot control API
+paths:
+  /l9bot/stats:
+    get:
+      operationId: stats
+      responses:
+        '200':
+          description: Ответ получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/L9StatRs'
+        '400':
+          description: параметры запроса некорректны
+  /l9bot/enable:
+    get:
+      operationId: enableBot
+      responses:
+        '200':
+          description: Ответ получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/L9StatusRs'
+        '400':
+          description: параметры запроса некорректны
+  /l9bot/disable:
+    get:
+      operationId: disableBot
+      responses:
+        '200':
+          description: Ответ получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/L9StatusRs'
+        '400':
+          description: параметры запроса некорректны
+components:
+  schemas:
+    L9StatRs:
+      type: object
+      properties:
+        botStatus:
+          type: string
+          description: статус ответа
+          enum: [
+            STARTING,
+            ENABLED,
+            SHUTTING_DOWN,
+            DISABLED
+          ]
+        activeUsers:
+          type: integer
+    L9StatusRs:
+      type: object
+      properties:
+        status:
+          type: string
+          description: статус ответа
+          enum: [
+            SUCCESS,
+            ERROR
+          ]
