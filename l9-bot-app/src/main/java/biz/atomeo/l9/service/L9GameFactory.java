@@ -1,9 +1,12 @@
 package biz.atomeo.l9.service;
 
-import biz.atomeo.l9.*;
+import biz.atomeo.l9.api.IOAdapter;
+import biz.atomeo.l9.bot.L9GameService;
+import biz.atomeo.l9.bot.L9GameState;
+import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.dto.SessionDTO;
 import biz.atomeo.l9.error.L9Exception;
-import biz.atomeo.l9.legacy.L9Picture;
+import biz.atomeo.l9.graphics.L9Picture;
 import biz.atomeo.l9.utils.PicUtils;
 import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.nio.StreamingGifWriter;
@@ -60,7 +63,7 @@ public class L9GameFactory {
 
                 @Override
                 public void cachePicture(int pictureNumber, List<L9Picture> frames) {
-                    //log.info("Picture ready for save, frames count: {}", frames.size());
+                    log.debug("Picture ready for save, frames count: {}", frames.size());
                     StreamingGifWriter writer = new StreamingGifWriter(Duration.ofMillis(20), false, true);
                     String picFileName = gameFilesProvider.getPicturesCacheFilename(game, pictureNumber);
                     try (StreamingGifWriter.GifStream gif = writer.prepareStream(picFileName, BufferedImage.TYPE_INT_ARGB)) {

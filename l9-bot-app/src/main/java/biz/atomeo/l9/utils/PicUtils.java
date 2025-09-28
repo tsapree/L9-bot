@@ -1,6 +1,6 @@
 package biz.atomeo.l9.utils;
 
-import biz.atomeo.l9.legacy.L9Picture;
+import biz.atomeo.l9.graphics.L9Picture;
 import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.pixels.Pixel;
 

@@ -1,9 +1,9 @@
 package biz.atomeo.l9.service;
 
-import biz.atomeo.l9.L9GameService;
-import biz.atomeo.l9.L9GameState;
-import biz.atomeo.l9.L9Request;
-import biz.atomeo.l9.L9Response;
+import biz.atomeo.l9.bot.L9GameService;
+import biz.atomeo.l9.bot.L9GameState;
+import biz.atomeo.l9.bot.dto.L9Request;
+import biz.atomeo.l9.bot.dto.L9Response;
 import biz.atomeo.l9.dto.AnswerDTO;
 import biz.atomeo.l9.dto.SessionDTO;
 import biz.atomeo.l9.error.L9Exception;

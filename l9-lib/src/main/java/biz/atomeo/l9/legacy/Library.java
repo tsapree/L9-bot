@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import biz.atomeo.l9.legacy.androidMocks.*;
+//import biz.atomeo.l9.legacy.androidMocks.*;
 //import org.xmlpull.v1.XmlPullParser;
 //import org.xmlpull.v1.XmlPullParserException;
 
@@ -79,7 +79,7 @@ public class Library {
 ////		R.drawable.ic_tip
 //	};
 //
-	Handler h;
+//	Handler h;
 	private String GameFullPathName;
 //	private ArrayList<String> paths;
 //
@@ -514,15 +514,15 @@ public class Library {
 //		return result;
 //	}
 //
-	public String getSpannedString(SpannableStringBuilder ssb) {
+ //	public String getSpannedString(SpannableStringBuilder ssb) {
 //		String wrapped=wrapSpans(ssb);
 //		int begin=wrapped.indexOf('{');
 //		int end=wrapped.lastIndexOf('}');
 //		if (begin+1<end && begin>0)
 //	    	return wrapped.substring(begin+1, end);
 //		else
-	    	return null;
-	}
+//	    	return null;
+//	}
 //
 //	//���������� spans �� ����� {}
 //	private SpannableStringBuilder unwrapSpans(String wrappedString, int color) {

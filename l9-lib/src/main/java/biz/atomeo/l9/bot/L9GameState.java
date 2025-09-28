@@ -1,4 +1,4 @@
-package biz.atomeo.l9;
+package biz.atomeo.l9.bot;
 
 public class L9GameState {
     // Состояние игры, для каждого пользователя бота будет по одному состоянию на каждую игру

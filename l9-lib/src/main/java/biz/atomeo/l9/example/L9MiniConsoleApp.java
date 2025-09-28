@@ -1,6 +1,12 @@
-package biz.atomeo.l9;
+package biz.atomeo.l9.example;
 
-import biz.atomeo.l9.legacy.L9Picture;
+import biz.atomeo.l9.bot.L9BotConnector;
+import biz.atomeo.l9.constants.L9Game;
+import biz.atomeo.l9.api.IOAdapter;
+import biz.atomeo.l9.api.InputAdapter;
+import biz.atomeo.l9.api.TextOutputAdapter;
+import biz.atomeo.l9.graphics.L9Picture;
+import biz.atomeo.l9.legacy.L9;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -109,14 +115,14 @@ public class L9MiniConsoleApp {
         while ((connector.L9State != connector.L9StateStopped)) {
             if (connector.L9State == connector.L9StateWaitForCommand) {
                 System.out.println(textOutputAdapter.getMessage());
-                connector.InputCommand(connector.inputAdapter.inputCommand());
+                connector.InputCommand(connector.getInputAdapter().inputCommand());
             } else step();
         };
     }
 
     void step() {
-        while (connector.L9State==connector.L9StateRunning
-                || connector.L9State==connector.L9StateCommandReady)
+        while (connector.L9State == L9.L9StateRunning
+                || connector.L9State== L9.L9StateCommandReady)
             connector.RunGame();
     };
 

@@ -1,4 +1,13 @@
-package biz.atomeo.l9;
+package biz.atomeo.l9.bot;
+
+import biz.atomeo.l9.api.IOAdapter;
+import biz.atomeo.l9.api.InputAdapter;
+import biz.atomeo.l9.api.TextOutputAdapter;
+import biz.atomeo.l9.bot.dto.L9Request;
+import biz.atomeo.l9.bot.dto.L9Response;
+import biz.atomeo.l9.constants.L9Game;
+import biz.atomeo.l9.constants.L9Phase;
+import biz.atomeo.l9.legacy.L9;
 
 import java.util.List;
 
@@ -42,13 +51,13 @@ public class L9GameService {
         this.l9request.setKey(request.getKey());
         this.l9request.setCommand(request.getCommand());
 
-        if (connector.L9State == connector.L9StateWaitForCommand) {
+        if (connector.L9State == L9.L9StateWaitForCommand) {
             connector.InputCommand(request.getCommand());
         }
 
-        while (connector.L9State == connector.L9StateRunning
-        || connector.L9State == connector.L9StateCommandReady
-        || connector.L9State == connector.L9StateKeyReady) {
+        while (connector.L9State == L9.L9StateRunning
+        || connector.L9State == L9.L9StateCommandReady
+        || connector.L9State == L9.L9StateKeyReady) {
             //TODO: чтобы точно не было зависания - выполнять шаги порциями
             step();
         }
@@ -59,11 +68,12 @@ public class L9GameService {
             case L9StateWaitForKey -> L9Phase.WAITING_FOR_A_KEY;
             default -> null; //TODO: не должно быть такого, но на всякий
         };
+
         return L9Response.builder()
                 .phase(phase)
                 .status("Success")
                 .message(textOutputAdapter.getMessage())
-                .pictures((List<String>) connector.ioAdapter.popPictures())
+                .pictures((List<String>) connector.getIOAdapter().popPictures())
                 .build();
     }
 
@@ -71,7 +81,7 @@ public class L9GameService {
         while (connector.L9State == connector.L9StateRunning
                 || connector.L9State == connector.L9StateCommandReady)
             connector.RunGame();
-    };
+    }
 
     private TextOutputAdapter textOutputAdapter = new TextOutputAdapter() {
         final StringBuilder sb = new StringBuilder();

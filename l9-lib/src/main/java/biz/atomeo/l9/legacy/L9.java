@@ -48,6 +48,9 @@ package biz.atomeo.l9.legacy;
 //if (var) -> if(var!=0)
 //*getvar()->workspace.vartable[getvar()]&0xffff
 
+import biz.atomeo.l9.graphics.L9Bitmap;
+import biz.atomeo.l9.graphics.PictureSize;
+
 import static biz.atomeo.l9.legacy.L9Utils.*;
 
 abstract public class L9 {
@@ -3090,14 +3093,14 @@ GFX_V3C          320 x 96             no
 		show_picture(workspace.vartable[getvar()]&0xffff);
 	}
 
-    public void GetPictureSize(int[] width, int[] height) {
-		if (L9GameType == L9_V4) {
-			width[0] = 0;
-			height[0] = 0;
-		} else {
-			width[0] = (gfx_mode != GFX_V3C) ? 160 : 320;
-			height[0] = (gfx_mode == GFX_V2) ? 128 : 96;			
+    public PictureSize getPictureSize() {
+		int width = 0;
+        int height = 0;
+        if (L9GameType != L9_V4) {
+			width = (gfx_mode != GFX_V3C) ? 160 : 320;
+			height = (gfx_mode == GFX_V2) ? 128 : 96;
 		}
+        return new PictureSize(width, height);
 	}
 
     public boolean runGraphics() {
