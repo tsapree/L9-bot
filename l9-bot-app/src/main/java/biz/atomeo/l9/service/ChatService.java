@@ -71,6 +71,7 @@ public class ChatService {
                 Please choose game to play:\s
                 1. Emerald Isle\s
                 2. Worm in Paradise\s
+                3. Snowball\s
                 """).build();
     }
 
@@ -81,6 +82,9 @@ public class ChatService {
                 break;
             case "2":
                 gameFactory.startGame(session, L9Game.WORM_PC);
+                break;
+            case "3":
+                gameFactory.startGame(session, L9Game.SNOWBALL);
                 break;
             default:
                 throw new L9Exception("Unknown game or load error.");

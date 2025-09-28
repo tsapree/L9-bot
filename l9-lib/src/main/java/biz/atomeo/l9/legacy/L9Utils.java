@@ -3,39 +3,40 @@ package biz.atomeo.l9.legacy;
 public class L9Utils {
     private L9Utils() {}
 
-    public static char toupper(char c) {
+    public static char toUpper(char c) {
         if (c>='a' && c<='z') c=(char)(c-32);
         return c;
     }
 
-    public static char tolower(char c) {
+    public static char toLower(char c) {
         if (c>='A' && c<='Z') c=(char)(c+32);
         return c;
     }
 
-    public static boolean isdigit(char c) {
+    public static boolean isDigit(char c) {
         return (c>='0' && c<='9');
-    };
+    }
 
-    public static boolean isupper(char c) {
+    public static boolean isUpper(char c) {
         return (c>='A' && c<='Z');
-    };
+    }
+
+    public static boolean isalnum(char c) {
+        return ((c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9'));
+    }
 
     //compare buff to lowercase string, true if least #len# of chars equals.
     public static boolean stricmp(char[] buff,String str, int len) {
         if (len>buff.length) return false;
         for (int i=0;i<len;i++) {
-            if (tolower(buff[i])!=str.charAt(i)) return false;
+            if (toLower(buff[i])!=str.charAt(i)) return false;
         }
         return true;
-    };
+    }
+
     public static boolean stricmp(char[] buff,String str) {
         int len=str.length();
         return stricmp(buff,str,len);
-    }
-
-    public static boolean isalnum(char c) {
-        return ((c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9'));
     }
 
     //returns NUM from array of chars, begins from index, or -1 if wrong rezult
@@ -62,7 +63,7 @@ public class L9Utils {
         while (i<cl-sl) {
             rez=1;
             for (j=0;j<sl;j++)
-                if (toupper(c[i+j])!=s.charAt(j)) {
+                if (toUpper(c[i+j])!=s.charAt(j)) {
                     rez=0;
                     break;
                 };

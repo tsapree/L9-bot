@@ -5,5 +5,6 @@ import lombok.Getter;
 @Getter
 public enum L9Game {
     EMERALD_ISLE,
-    WORM_PC;
+    WORM_PC,
+    SNOWBALL;
 }
