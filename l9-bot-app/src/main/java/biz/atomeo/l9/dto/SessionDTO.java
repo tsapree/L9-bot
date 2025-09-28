@@ -1,7 +1,7 @@
 package biz.atomeo.l9.dto;
 
-import biz.atomeo.l9.L9GameService;
-import biz.atomeo.l9.L9GameState;
+import biz.atomeo.l9.bot.L9GameService;
+import biz.atomeo.l9.bot.L9GameState;
 import biz.atomeo.l9.constants.ChatState;
 import lombok.Builder;
 import lombok.Getter;

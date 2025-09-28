@@ -1,6 +1,6 @@
 package biz.atomeo.l9.utils;
 
-import biz.atomeo.l9.L9MiniConsoleApp;
+import biz.atomeo.l9.example.L9MiniConsoleApp;
 import biz.atomeo.l9.error.L9Exception;
 
 import java.io.*;

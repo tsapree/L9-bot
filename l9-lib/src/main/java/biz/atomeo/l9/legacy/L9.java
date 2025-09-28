@@ -48,6 +48,9 @@ package biz.atomeo.l9.legacy;
 //if (var) -> if(var!=0)
 //*getvar()->workspace.vartable[getvar()]&0xffff
 
+import biz.atomeo.l9.graphics.L9Bitmap;
+import biz.atomeo.l9.graphics.PictureSize;
+
 import static biz.atomeo.l9.legacy.L9Utils.*;
 
 abstract public class L9 {

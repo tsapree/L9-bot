@@ -1,5 +1,6 @@
-package biz.atomeo.l9;
+package biz.atomeo.l9.bot.dto;
 
+import biz.atomeo.l9.constants.L9Phase;
 import lombok.*;
 
 import java.util.List;

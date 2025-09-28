@@ -1,4 +1,4 @@
-package biz.atomeo.l9.legacy;
+package biz.atomeo.l9.graphics;
 
 public class L9Picture {
     public int width, height;

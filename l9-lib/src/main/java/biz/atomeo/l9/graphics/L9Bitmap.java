@@ -1,4 +1,4 @@
-package biz.atomeo.l9.legacy;
+package biz.atomeo.l9.graphics;
 
 import biz.atomeo.l9.api.IOAdapter;
 

@@ -1,6 +1,4 @@
-package biz.atomeo.l9;
-
-import biz.atomeo.l9.legacy.L9Picture;
+package biz.atomeo.l9.graphics;
 
 public class L9Painter {
     final L9Picture l9Picture;

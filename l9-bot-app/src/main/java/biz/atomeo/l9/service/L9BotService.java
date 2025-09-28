@@ -1,6 +1,6 @@
 package biz.atomeo.l9.service;
 
-import biz.atomeo.l9.*;
+import biz.atomeo.l9.bot.L9BotConnector;
 import biz.atomeo.l9.dto.AnswerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

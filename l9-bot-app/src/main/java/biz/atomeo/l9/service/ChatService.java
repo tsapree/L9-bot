@@ -1,6 +1,6 @@
 package biz.atomeo.l9.service;
 
-import biz.atomeo.l9.L9Game;
+import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.constants.ChatState;
 import biz.atomeo.l9.dto.AnswerDTO;
 import biz.atomeo.l9.dto.SessionDTO;

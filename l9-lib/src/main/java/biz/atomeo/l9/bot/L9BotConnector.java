@@ -1,12 +1,13 @@
-package biz.atomeo.l9;
+package biz.atomeo.l9.bot;
 
 import biz.atomeo.l9.api.IOAdapter;
 import biz.atomeo.l9.api.InputAdapter;
 import biz.atomeo.l9.api.TextOutputAdapter;
+import biz.atomeo.l9.graphics.L9Painter;
 import biz.atomeo.l9.legacy.L9;
-import biz.atomeo.l9.legacy.L9Bitmap;
-import biz.atomeo.l9.legacy.L9Picture;
-import biz.atomeo.l9.legacy.PictureSize;
+import biz.atomeo.l9.graphics.L9Bitmap;
+import biz.atomeo.l9.graphics.L9Picture;
+import biz.atomeo.l9.graphics.PictureSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,12 @@ public class L9BotConnector extends L9 {
     private final static int GIF_ANIMATION_COMMANDS_PER_FRAME = 10;
 
     // if picture found in cache, do not need to regenerate it, mockDrawing save this state
-    boolean mockDrawing = false;
+    private boolean mockDrawing = false;
 
-    final IOAdapter ioAdapter;
-    final TextOutputAdapter textOutputAdapter;
-    final InputAdapter inputAdapter;
+    private final IOAdapter ioAdapter;
+    private final TextOutputAdapter textOutputAdapter;
 
+    private final InputAdapter inputAdapter;
     private L9Painter painter = null;
 
     private int l9BitmapType = 0;
@@ -43,6 +44,14 @@ public class L9BotConnector extends L9 {
         this.ioAdapter = ioAdapter;
         this.textOutputAdapter = textOutputAdapter;
         this.inputAdapter = inputAdapter;
+    }
+
+    public InputAdapter getInputAdapter() {
+        return inputAdapter;
+    }
+
+    public IOAdapter getIOAdapter() {
+        return ioAdapter;
     }
 
     @Override

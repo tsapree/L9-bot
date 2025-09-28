@@ -1,4 +1,4 @@
-package biz.atomeo.l9;
+package biz.atomeo.l9.constants;
 
 public enum L9Phase {
     INIT,

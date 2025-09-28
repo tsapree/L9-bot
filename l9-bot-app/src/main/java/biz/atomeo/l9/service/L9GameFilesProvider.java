@@ -1,6 +1,6 @@
 package biz.atomeo.l9.service;
 
-import biz.atomeo.l9.L9Game;
+import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.config.L9AppProperties;
 import biz.atomeo.l9.dto.GameInfoDTO;
 import biz.atomeo.l9.error.L9Exception;
