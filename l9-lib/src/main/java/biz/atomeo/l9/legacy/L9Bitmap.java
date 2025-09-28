@@ -1,6 +1,6 @@
 package biz.atomeo.l9.legacy;
 
-import biz.atomeo.l9.IOAdapter;
+import biz.atomeo.l9.api.IOAdapter;
 
 public class L9Bitmap {
 

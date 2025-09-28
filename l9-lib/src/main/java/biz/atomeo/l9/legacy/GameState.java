@@ -141,7 +141,7 @@ public class GameState {
 
     //for save() - old version, not compatible with l9.net and level 9
     public byte[] getCloneInBytesV04(byte[] mem, int startmem) {
-        short buff[]=new short[2+1+filename.length()+3+VARSIZE+1+L9.STACKSIZE+1+listsize/2+1];
+        short[] buff = new short[2+1+filename.length()+3+VARSIZE+1+L9.STACKSIZE+1+listsize/2+1];
         int i=0,j;
         buff[i++]=L9_ID>>16;
         buff[i++]=L9_ID&0xffff;
@@ -170,7 +170,7 @@ public class GameState {
     public boolean setFromCloneInBytes(byte[] bytebuff, byte[] mem, int startmem) {
         int i=0,j=0,s,b;
         s=bytebuff.length;
-        short buff[]=new short[s/2];
+        short[] buff = new short[s/2];
         while (j<s) {
             buff[i++]=(short)(bytebuff[j]&0xff|((bytebuff[j+1]&0xff)<<8));
             j+=2;

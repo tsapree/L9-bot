@@ -1,5 +1,8 @@
 package biz.atomeo.l9;
 
+import biz.atomeo.l9.api.IOAdapter;
+import biz.atomeo.l9.api.InputAdapter;
+import biz.atomeo.l9.api.TextOutputAdapter;
 import biz.atomeo.l9.legacy.L9Picture;
 
 import java.io.BufferedReader;

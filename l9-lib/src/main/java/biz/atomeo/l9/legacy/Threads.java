@@ -1,8 +1,6 @@
 package biz.atomeo.l9.legacy;
 
-//import biz.atomeo.l9.legacy.androidMocks.Handler;
-import biz.atomeo.l9.legacy.androidMocks.Message;
-import biz.atomeo.l9.legacy.androidMocks.SpannableStringBuilder;
+//import biz.atomeo.l9.legacy.androidMocks.SpannableStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +44,11 @@ public class Threads {
     static boolean gfx_ready=false;
     
 	//ArrayAdapter<SpannableStringBuilder> lvAdapter;
-    List<SpannableStringBuilder> lvAdapter;
-	SpannableStringBuilder logStringCapacitor=null;
+    //List<SpannableStringBuilder> lvAdapter;
+	//SpannableStringBuilder logStringCapacitor=null;
 	int logStrId=-1;
 	
-	History history;
+	//History history;
 	List<String> lvHistoryAdapter;
 	
 	char keyPressed=0;
@@ -72,8 +70,8 @@ public class Threads {
 //	    lib.prepareLibrary();
 
 		//lvAdapter = new ArrayAdapter<SpannableStringBuilder>(activity, R.layout.log_list_item, new ArrayList<SpannableStringBuilder>());
-	    lvAdapter = new ArrayList<SpannableStringBuilder>();
-		history=new History();
+	    //lvAdapter = new ArrayList<SpannableStringBuilder>();
+		//history=new History();
 		lvHistoryAdapter = new ArrayList<String>(); //CustomisableListAdapter<String>(activity, R.layout.history_list_item, history.getHistory());
 
 		//lvHistoryAdapter.add("unfas para");

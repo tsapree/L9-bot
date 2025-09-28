@@ -1,5 +1,6 @@
-package biz.atomeo.l9;
+package biz.atomeo.l9.api;
 
+import biz.atomeo.l9.L9Game;
 import biz.atomeo.l9.legacy.L9Picture;
 
 import java.util.List;

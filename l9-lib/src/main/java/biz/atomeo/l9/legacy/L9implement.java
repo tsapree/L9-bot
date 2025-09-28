@@ -1,6 +1,6 @@
 package biz.atomeo.l9.legacy;
 
-import biz.atomeo.l9.legacy.androidMocks.SpannableStringBuilder;
+//import biz.atomeo.l9.legacy.androidMocks.SpannableStringBuilder;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -14,12 +14,12 @@ import java.util.concurrent.TimeUnit;
 
 public class L9implement extends L9 {
 	String cmdStr;
-	DebugStorage ds;
+	//DebugStorage ds;
 	String vStr;
 	//Handler mHandler;
 	Library lib;
 	Threads th;
-	ArrayList<SpannableStringBuilder> tempLog;
+	//ArrayList<SpannableStringBuilder> tempLog;
 	
 	//EditText et;
 	byte gamedata[];
@@ -28,14 +28,14 @@ public class L9implement extends L9 {
 		lib=l;
 		gamedata=null;
 		cmdStr=null;
-		ds=new DebugStorage();
+		//ds=new DebugStorage();
 		th=t;
 	};
 
     @Override
     public void os_printchar(char c) {
-		if (c==0x0d) log_debug(ds.getstr());
-		else if (ds.putchar(c)) log_debug(ds.getstr());
+		//if (c==0x0d) log_debug(ds.getstr());
+		//else if (ds.putchar(c)) log_debug(ds.getstr());
         //Message msg = mHandler.obtainMessage(Threads.MACT_PRINTCHAR, c, 0);
 		//mHandler.sendMessage(msg);
 	};
@@ -47,7 +47,7 @@ public class L9implement extends L9 {
 
     @Override
     public void os_debug(String str) {
-		log_debug(ds.getstr());
+		//log_debug(ds.getstr());
 		log_debug(str);
 	};
 
@@ -191,7 +191,7 @@ public class L9implement extends L9 {
 		String path=th.choosed_restore_filename;
 		if ((path==null) || (path.length()<1)) return null;
 		path=lib.getAbsolutePath(path);
-		load_piclog(path,th.history);
+//		load_piclog(path,th.history);
 		//mHandler.sendEmptyMessage(Threads.MACT_REPLACE_LOG);
 		return lib.fileLoadToArray(path);
 	};
@@ -205,7 +205,7 @@ public class L9implement extends L9 {
 		if (tempGS.setFromCloneInBytes(buff, l9memory, listarea)) {
 			workspace=tempGS.clone();
 			codeptr=acodeptr+workspace.codeptr;
-			load_piclog(path,th.history);
+//			load_piclog(path,th.history);
 			//mHandler.sendEmptyMessage(Threads.MACT_REPLACE_LOG);
 			return true;
 		};
@@ -237,8 +237,8 @@ public class L9implement extends L9 {
 //		else lib.deleteFile(name);
 	}
 
-	void load_piclog(String path, History h) {
-		String name;
+//	void load_piclog(String path, History h) {
+//		String name;
 //		name=lib.changeFileExtension(path, "png");
 //		waitPictureToDraw();
 //		bm=lib.pictureLoadToBitmap(name);
@@ -250,6 +250,6 @@ public class L9implement extends L9 {
 //		for (SpannableStringBuilder logStr:tempLog) {
 //			h.add(lib.getSpannedString(logStr));
 //		}
-	}
+//	}
 
 }

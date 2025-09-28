@@ -1,6 +1,7 @@
 package biz.atomeo.l9.service;
 
 import biz.atomeo.l9.*;
+import biz.atomeo.l9.api.IOAdapter;
 import biz.atomeo.l9.dto.SessionDTO;
 import biz.atomeo.l9.error.L9Exception;
 import biz.atomeo.l9.legacy.L9Picture;

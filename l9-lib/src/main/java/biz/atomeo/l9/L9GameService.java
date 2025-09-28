@@ -1,5 +1,9 @@
 package biz.atomeo.l9;
 
+import biz.atomeo.l9.api.IOAdapter;
+import biz.atomeo.l9.api.InputAdapter;
+import biz.atomeo.l9.api.TextOutputAdapter;
+
 import java.util.List;
 
 import static biz.atomeo.l9.legacy.L9.*;
