@@ -4,6 +4,8 @@ import biz.atomeo.l9.bot.L9GameService;
 import biz.atomeo.l9.bot.L9GameState;
 import biz.atomeo.l9.bot.dto.L9Request;
 import biz.atomeo.l9.bot.dto.L9Response;
+import biz.atomeo.l9.constants.ChatState;
+import biz.atomeo.l9.constants.L9Phase;
 import biz.atomeo.l9.dto.AnswerDTO;
 import biz.atomeo.l9.dto.SessionDTO;
 import biz.atomeo.l9.error.L9Exception;
@@ -41,7 +43,7 @@ public class L9ReplyService {
 
     private AnswerDTO doL9Stuff(String userCommand,
                              L9GameState l9GameState,
-                             L9GameService l9GameService ) throws L9Exception {
+                             L9GameService l9GameService) throws L9Exception {
 
         validateCommand(userCommand);
 
@@ -55,6 +57,8 @@ public class L9ReplyService {
             throw new L9Exception("Generated empty message. Something goes wrong!");
 
         return AnswerDTO.builder()
+                .chatState(response.getPhase()!=L9Phase.STOPPED ?
+                        ChatState.PLAYING_GAME : ChatState.STOPPED_GAME)
                 .answerText(response.getMessage())
                 .picturesFilenames(response.getPictures())
                 .build();

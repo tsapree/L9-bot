@@ -54,7 +54,11 @@ public class ChatService {
                        """, version) + toChooseGame(session).getAnswerText())
                         .build();
             case PLAYING_GAME:
-                return l9ReplyService.generateAnswer(session, command);
+                AnswerDTO answerDTO = l9ReplyService.generateAnswer(session, command);
+                if (ChatState.STOPPED_GAME.equals(answerDTO.getChatState())) {
+                    answerDTO.append(toChooseGame(session));
+                }
+                return answerDTO;
             case CHOOSE_GAME:
             default:
                 try {
