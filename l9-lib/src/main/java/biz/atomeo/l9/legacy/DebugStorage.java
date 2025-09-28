@@ -1,7 +1,7 @@
 package biz.atomeo.l9.legacy;
 
 public class DebugStorage {
-    private char[] debug;
+    private final char[] debug;
     private int debugptr;
     private static final int debugsize=500;
 

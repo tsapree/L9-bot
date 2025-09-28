@@ -79,7 +79,7 @@ public class Library {
 ////		R.drawable.ic_tip
 //	};
 //
-	Handler h;
+//	Handler h;
 	private String GameFullPathName;
 //	private ArrayList<String> paths;
 //

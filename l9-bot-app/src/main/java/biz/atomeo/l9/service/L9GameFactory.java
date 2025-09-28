@@ -60,7 +60,7 @@ public class L9GameFactory {
 
                 @Override
                 public void cachePicture(int pictureNumber, List<L9Picture> frames) {
-                    //log.info("Picture ready for save, frames count: {}", frames.size());
+                    log.debug("Picture ready for save, frames count: {}", frames.size());
                     StreamingGifWriter writer = new StreamingGifWriter(Duration.ofMillis(20), false, true);
                     String picFileName = gameFilesProvider.getPicturesCacheFilename(game, pictureNumber);
                     try (StreamingGifWriter.GifStream gif = writer.prepareStream(picFileName, BufferedImage.TYPE_INT_ARGB)) {

@@ -329,7 +329,7 @@ public class L9Bitmap {
 			}
 		}
 
-		l9picture.npalette = 16;
+		l9picture.paletteSize = 16;
 		for (i = 0; i < 16; i++)
 			l9picture.palette[i] = bitmap_pcst_colour(data[(i*2)],data[1+(i*2)]);
 
@@ -430,7 +430,7 @@ public class L9Bitmap {
 			}
 		}
 
-		l9picture.npalette = 16;
+		l9picture.paletteSize = 16;
 		for (i = 0; i < 16; i++) 
 			l9picture.palette[i] =bitmap_pc1_colour(data[6+i]); 
 
@@ -697,7 +697,7 @@ public class L9Bitmap {
 			}
 		}
 
-		l9picture.npalette = 16;
+		l9picture.paletteSize = 16;
 		for (i = 0; i < 16; i++)
 			l9picture.palette[i] = bitmap_pcst_colour(data[4+(i*2)]&0xff,data[5+(i*2)]&0xff);
 
@@ -819,7 +819,7 @@ public class L9Bitmap {
 			}
 		}
 
-		l9picture.npalette = 32;
+		l9picture.paletteSize = 32;
 		for (i = 0; i < 32; i++)
 			l9picture.palette[i] = bitmap_amiga_colour(data[i*2],data[i*2+1]);
 
@@ -934,7 +934,7 @@ public class L9Bitmap {
 			}
 		}
 
-		l9picture.npalette = 2;
+		l9picture.paletteSize = 2;
 		l9picture.palette[0] = 0;
 		l9picture.palette[1] = 0x00ffffff;
 
@@ -1150,7 +1150,7 @@ public class L9Bitmap {
 			}
 		}
 
-		l9picture.npalette = 16;
+		l9picture.paletteSize = 16;
 		for (i = 0; i < 16; i++)
 			l9picture.palette[i] = bitmap_c64_colours[i];
 
@@ -1275,7 +1275,7 @@ public class L9Bitmap {
 			isOddRow ^= 1;
 		}
 
-		l9picture.npalette = 8;
+		l9picture.paletteSize = 8;
 		for (i = 0; i < 8; i++)
 			l9picture.palette[i] = bitmap_bbc_colours[i];
 
