@@ -1,6 +1,6 @@
 # L9 Games Telegram Bot
 
-When bot is running, it can be found by @L9Games_bot in Telegram
+https://t.me/L9Games_bot - to try when it's running (but no save ingame progress between bot restarts yet!)
 
 Local Run:
  - mvn clear install spring-boot:run
