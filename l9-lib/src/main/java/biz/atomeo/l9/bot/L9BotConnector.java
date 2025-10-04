@@ -4,6 +4,7 @@ import biz.atomeo.l9.api.IOAdapter;
 import biz.atomeo.l9.api.InputAdapter;
 import biz.atomeo.l9.api.TextOutputAdapter;
 import biz.atomeo.l9.graphics.L9Painter;
+import biz.atomeo.l9.legacy.GameState;
 import biz.atomeo.l9.legacy.L9;
 import biz.atomeo.l9.graphics.L9Bitmap;
 import biz.atomeo.l9.graphics.L9Picture;
@@ -69,9 +70,39 @@ public class L9BotConnector extends L9 {
         return '\n';
     }
 
+    public boolean readSaveFile(String path) {
+        if (path==null) return false;
+        byte[] buff= ioAdapter.readSaveFile(path);
+        if (buff==null) return false;
+
+        GameState tempGS=new GameState();
+        if (!tempGS.setFromCloneInBytes(buff, l9memory, listarea)) return false;
+
+        workspace=tempGS; //tempGS.clone();
+        codeptr=acodeptr+workspace.codeptr;
+
+        //save game only on this state
+        L9State = L9.L9StateWaitForCommand;
+
+        return true;
+    }
+
+    public boolean writeSaveFile(String path) {
+        System.out.println("presaved codeptr="+workspace.codeptr);
+
+        workspace.codeptr=(short)((codeptr-acodeptr)&0xffff);
+        workspace.listsize=LISTAREASIZE;
+        workspace.stacksize=STACKSIZE;
+        workspace.filename=LastGame;
+        byte[] buff=workspace.getCloneInBytes(l9memory, listarea);
+        System.out.println("file saving: size="+buff.length+" "+buff.toString());
+
+        return ioAdapter.writeSaveFile(path, buff);
+    }
+
     @Override
     public byte[] os_load(String filename) {
-        return ioAdapter.loadFile(filename);
+        return ioAdapter.loadGameFile(filename);
     }
 
     @Override

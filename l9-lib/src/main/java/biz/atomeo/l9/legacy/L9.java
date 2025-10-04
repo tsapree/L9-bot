@@ -65,7 +65,7 @@ abstract public class L9 {
 	
 	private int showtitle=1;
 	
-    GameState workspace;
+    public GameState workspace;
 	private short randomseed;
 	private short constseed=0;
 	public int L9State;
@@ -122,19 +122,19 @@ GFX_V3C          320 x 96             no
 	private int pictureaddress=-1;
     private int picturedata=-1;
     private int picturesize;
-    byte[] l9memory;
+    public byte[] l9memory;
     private int startfile;
     private int filesize;
     private int startdata;
     private int datasize;
-    int listarea;
+    public int listarea;
 
     private int[] L9Pointers;
     private int absdatablock;
     private int list2ptr;
     private int list3ptr;
     private int list9startptr;
-    int acodeptr;
+    public int acodeptr;
     private int startmd;
     private int endmd;
     private int endwdp5;
@@ -192,7 +192,7 @@ GFX_V3C          320 x 96             no
     private char lastactualchar=0;
     private int d5;
 //
-    int codeptr;	// instruction codes - pointer
+    public int codeptr;	// instruction codes - pointer
     private int code;		// instruction codes - code
 //
     private int list9ptr;
@@ -1773,7 +1773,7 @@ GFX_V3C          320 x 96             no
 	}
 
     private void restore() {
-		byte buff[]=os_load_file();
+		byte[] buff=os_load_file();
 		GameState tempGS=new GameState();
 		if (buff!=null) {
 			if (tempGS.setFromCloneInBytes(buff, l9memory, listarea)) {

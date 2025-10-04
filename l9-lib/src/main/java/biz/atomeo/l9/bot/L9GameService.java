@@ -8,13 +8,19 @@ import biz.atomeo.l9.bot.dto.L9Response;
 import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.constants.L9Phase;
 import biz.atomeo.l9.legacy.L9;
+import lombok.Getter;
 
 import java.util.List;
 
 import static biz.atomeo.l9.legacy.L9.*;
 
+/*
+It's not a spring singleton bean - it created manually for now
+ */
 public class L9GameService {
     private final L9BotConnector connector;
+
+    @Getter
     private final L9Game l9game;
 
     //TODO: change it, it's lame
@@ -81,6 +87,15 @@ public class L9GameService {
         while (connector.L9State == connector.L9StateRunning
                 || connector.L9State == connector.L9StateCommandReady)
             connector.RunGame();
+    }
+
+    public boolean writeAutoSaveFile(String filename) {
+        if (connector.L9State == L9StateStopped) return false;
+        return connector.writeSaveFile(filename);
+    }
+
+    public boolean readAutoSaveFile(String filename) {
+        return connector.readSaveFile(filename);
     }
 
     private TextOutputAdapter textOutputAdapter = new TextOutputAdapter() {

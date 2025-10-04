@@ -204,11 +204,12 @@ public class Threads {
         	lib.setGamePath(null);
         	return;
         }
+        /*
         if (loadAutoSave) {
         	l9.restore_autosave(lib.getAbsolutePath("Saves/auto.sav"));
         } //else
         	//h.sendEmptyMessage(MACT_GFXOFF); //убираю картинку от прошлой игры
-        
+        */
 		gfx_ready=false;
 		
 		g = new Thread(new Runnable() {

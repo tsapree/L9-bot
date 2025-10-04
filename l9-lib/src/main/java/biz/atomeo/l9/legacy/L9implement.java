@@ -195,7 +195,7 @@ public class L9implement extends L9 {
 		//mHandler.sendEmptyMessage(Threads.MACT_REPLACE_LOG);
 		return lib.fileLoadToArray(path);
 	};
-	
+	/*
 	public boolean restore_autosave(String path) {
 
 		if (path==null) return false;
@@ -211,6 +211,8 @@ public class L9implement extends L9 {
 		};
 		return false;
 	};
+
+	 */
 	
 	public boolean autosave(String path) {
 		workspace.codeptr=(short)((codeptr-acodeptr)&0xffff);

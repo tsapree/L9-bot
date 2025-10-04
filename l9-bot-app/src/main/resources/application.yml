@@ -1,18 +1,25 @@
 
 
+
 l9:
   version: 0.0.1
+  in-memory-cache-enabled: true
   games:
-    EMERALD_ISLE:
+    EMERALD_ISLE_V2_S48:
       path: level9/SNA/V2/EMERALD.SNA
       archive: level9.zip
       folder: level9
-    SNOWBALL:
+    SNOWBALL_V3_PC:
       path: level9/SNA/V3/SNOWBALL.SNA
       archive: level9.zip
       folder: level9
-    WORM_PC:
+    WORM_IN_PARADISE_V3_PC:
       path: worm-pc/WORM.DAT
       pic: worm-pc/WORM.CGA
       archive: worm-pc.zip
       folder: worm-pc
+
+logging:
+  level:
+    root: INFO
+    biz.atomeo.l9: DEBUG

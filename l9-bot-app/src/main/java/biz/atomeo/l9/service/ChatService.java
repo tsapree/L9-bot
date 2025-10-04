@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ChatService {
 
-    private final SessionProvider sessionProvider;
+    private final LayeredSessionProvider sessionProvider;
     private final BotStateProvider botState;
     private final L9GameFactory gameFactory;
     private final L9ReplyService l9ReplyService;
 
     @Value("${l9.version}")
-    private String version;
+    private String botVersion;
 
     public AnswerDTO generateAnswer(Long chatId, String command) {
         if (!botState.isBotActive()) return AnswerDTO.builder()
@@ -51,7 +51,7 @@ public class ChatService {
                         .answerText(String.format("""
                        Welcome to L9 Games Bot v%s!\s
                        \s
-                       """, version) + toChooseGame(session).getAnswerText())
+                       """, botVersion) + toChooseGame(session).getAnswerText())
                         .build();
             case PLAYING_GAME:
                 AnswerDTO answerDTO = l9ReplyService.generateAnswer(session, command);
@@ -82,13 +82,13 @@ public class ChatService {
     private AnswerDTO toPlayingGame(SessionDTO session, String command) throws L9Exception{
         switch (command) {
             case "1":
-                gameFactory.startGame(session, L9Game.EMERALD_ISLE);
+                gameFactory.startGame(session, L9Game.EMERALD_ISLE_V2_S48);
                 break;
             case "2":
-                gameFactory.startGame(session, L9Game.WORM_PC);
+                gameFactory.startGame(session, L9Game.WORM_IN_PARADISE_V3_PC);
                 break;
             case "3":
-                gameFactory.startGame(session, L9Game.SNOWBALL);
+                gameFactory.startGame(session, L9Game.SNOWBALL_V3_PC);
                 break;
             default:
                 throw new L9Exception("Unknown game or load error.");

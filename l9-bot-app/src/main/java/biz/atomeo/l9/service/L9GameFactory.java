@@ -55,6 +55,25 @@ public class L9GameFactory {
                 }
 
                 @Override
+                public byte[] readSaveFile(String fileName) {
+                    try {
+                        return gameFilesProvider.readSaveFile(fileName);
+                    } catch (L9Exception e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                public boolean writeSaveFile(String fileName, byte[] bytes) {
+                    try {
+                        gameFilesProvider.writeSaveFile(fileName, bytes);
+                    } catch (L9Exception e) {
+                        return false;
+                    }
+                    return true;
+                }
+
+                @Override
                 public boolean isPictureCached(int pictureNumber) {
                     String picFileName = gameFilesProvider.getPicturesCacheFilename(game, pictureNumber);
                     pictures.add(picFileName);
@@ -95,7 +114,7 @@ public class L9GameFactory {
                 }
 
                 @Override
-                public byte[] loadFile(String fileName) {
+                public byte[] loadGameFile(String fileName) {
                     try {
                         return gameFilesProvider.readGameFile(fileName);
                     } catch (L9Exception e) {
@@ -103,11 +122,12 @@ public class L9GameFactory {
                     }
                 }
             });
-            L9GameState gameState = new L9GameState();
+            L9GameState gameState = new L9GameState(game);
 
             session.setGameState(gameState);
             session.setGameService(service);
         } catch (Exception e) {
+            log.error("Error creating game", e);
             session.setGameService(null);
             session.setChatState(null);
             throw new L9Exception("Error creating game", e);
