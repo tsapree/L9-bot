@@ -14,19 +14,23 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 @Service
 @Slf4j
 public class L9GameFilesProvider {
 
-    @Value("${downloadsDir}")
+    @Value("${downloadsDir:tmp/downloads/}")
     private String downloadsDirectory;
 
-    @Value("${gamesDir}")
+    @Value("${gamesDir:tmp/games/}")
     private String gamesDirectory;
 
-    @Value("${picturesDir}")
+    @Value("${picturesDir:tmp/cache/}")
     private String picturesCacheDirectory;
+
+    @Value("${sessionsDir:sessions/}")
+    private String sessionsDirectory;
 
     @Value("${l9source}")
     private String l9source;
@@ -37,14 +41,12 @@ public class L9GameFilesProvider {
     public String getGamePath(L9Game l9Game) {
         GameInfoDTO gi = l9AppProperties.getGames().get(l9Game.name());
         try {
+            //check that game exist in cache, if not - download and unzip it
             checkAndPrepareGameFile(gi.getPath(), gi.getArchive(), gi.getFolder());
         } catch (L9Exception e) {
             //
         }
-        return l9AppProperties
-                .getGames()
-                .get(l9Game.name())
-                .getPath();
+        return gi.getPath();
     }
 
     public String getPicturePath(L9Game l9Game) {
@@ -55,7 +57,7 @@ public class L9GameFilesProvider {
     }
 
     public String getPicturesCacheFilename(L9Game l9Game, int picNumber) {
-        String pf = picturesCacheDirectory+l9Game.name()+"_pic"+picNumber+".gif";
+        String pf = picturesCacheDirectory+l9Game.getId()+"_pic"+picNumber+".gif";
         log.debug("pic cache path {}", pf);
         return pf;
     }
@@ -74,12 +76,52 @@ public class L9GameFilesProvider {
         }
     }
 
+    public byte[] readSaveFile(String filename) throws L9Exception {
+        try {
+            return FileUtils.readFileToByteArray(new File(sessionsDirectory + filename));
+        } catch (IOException e) {
+            throw new L9Exception("Read file error", e);
+        }
+    }
+
+    public void writeSaveFile(String filename, byte[] bytes) throws L9Exception {
+        try {
+            FileUtils.writeByteArrayToFile(new File(sessionsDirectory + filename), bytes);
+        } catch (IOException e) {
+            throw new L9Exception("Read file error", e);
+        }
+    }
+
+    public void writeSessionToFile(Long chatId, String source) throws L9Exception {
+        try {
+            FileUtils.writeStringToFile(new File(String.format("%s%d.json", sessionsDirectory, chatId)), source, Charset.defaultCharset());
+        } catch (IOException e) {
+            throw new L9Exception("Write session file error", e);
+        }
+    }
+
+    public String readSessionFromFile(Long chatId) throws L9Exception {
+        try {
+            String path = String.format("%s%d.json", sessionsDirectory, chatId);
+            if (!FileIOUtils.isFileExists(path)) return null;
+            return FileUtils.readFileToString(new File(path), "UTF-8");
+        } catch (IOException e) {
+            throw new L9Exception("Read session file error", e);
+        }
+    }
+
+    public String getSaveFilename(Long chatId, L9Game l9Game) {
+        String pf = String.format("%d_%s.sav", chatId, l9Game.getId());
+        log.debug("game save filename {}", pf);
+        return pf;
+    }
+
     public void checkAndPrepareGameFile(String filename, String archiveName, String unpackFolder) throws L9Exception {
-        log.info("Check is file {} exists", filename);
+        log.debug("Check is file {} exists", filename);
         if (checkGameFileExist(filename)) return;
-        log.info("Check is archive {} exists - and download if not", archiveName);
+        log.debug("Check is archive {} exists - and download if not", archiveName);
         downloadL9Archive(archiveName);
-        log.info("Unzip archive {} to folder {}", archiveName, unpackFolder);
+        log.debug("Unzip archive {} to folder {}", archiveName, unpackFolder);
         unzipL9Archive(archiveName, unpackFolder);
     }
 
@@ -102,7 +144,7 @@ public class L9GameFilesProvider {
 
     public void downloadFileToPath(String url, String path) throws L9Exception{
         try {
-            log.info(new File(path).getAbsolutePath());
+            log.debug("Downloading: {}",new File(path).getAbsolutePath());
             FileUtils.copyURLToFile(new URL(url), new File(path));
         } catch (IOException e) {
             throw new L9Exception("file download error: ", e);

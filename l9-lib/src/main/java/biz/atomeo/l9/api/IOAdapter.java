@@ -6,12 +6,15 @@ import biz.atomeo.l9.graphics.L9Picture;
 import java.util.List;
 
 public interface IOAdapter {
-    byte[] loadFile(String fileName);
+    byte[] loadGameFile(String fileName);
     String getGamePath(L9Game game);
     String getPicPath(L9Game game);
 
     boolean fileExist(String file);
     byte[] fileLoadRelativeToArray(String file);
+
+    byte[] readSaveFile(String fileName);
+    boolean writeSaveFile(String fileName, byte[] bytes);
 
     // check if it is file in cache, and mark to msg it.
     boolean isPictureCached(int picture);

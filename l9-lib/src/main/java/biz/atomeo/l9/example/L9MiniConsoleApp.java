@@ -65,7 +65,7 @@ public class L9MiniConsoleApp {
 
         IOAdapter ioAdapter = new IOAdapter() {
             @Override
-            public byte[] loadFile(String fileName) {
+            public byte[] loadGameFile(String fileName) {
                 return loadResourceAsBytes(fileName);
             }
 
@@ -87,6 +87,16 @@ public class L9MiniConsoleApp {
             @Override
             public byte[] fileLoadRelativeToArray(String file) {
                 return null;
+            }
+
+            @Override
+            public byte[] readSaveFile(String fileName) {
+                return new byte[0];
+            }
+
+            @Override
+            public boolean writeSaveFile(String fileName, byte[] bytes) {
+                return false;
             }
 
             @Override

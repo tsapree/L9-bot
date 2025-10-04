@@ -17,14 +17,19 @@ public class GameState {
     private static final int VARSIZE = 256;
     private static final int L9_ID=0x4c393031;
 
-    int Id;
-    short codeptr,stackptr,listsize,stacksize,filenamesize,checksum;
+    //int Id;
+    public short codeptr;
+    short stackptr;
+    public short listsize;
+    public short stacksize;
+    short filenamesize;
+    short checksum;
     short[] vartable;
     //byte listarea[];
     short[] stack;
-    String filename;
+    public String filename;
 
-    GameState() {
+    public GameState() {
         vartable=new short[VARSIZE];
         //listarea=new byte[LISTAREASIZE];
         stack=new short[L9.STACKSIZE];
