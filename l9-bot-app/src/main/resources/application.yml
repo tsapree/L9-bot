@@ -1,9 +1,8 @@
-
-
-
 l9:
   version: 0.0.1
   in-memory-cache-enabled: true
+  session-cache-period-minutes: 15
+
   games:
     EMERALD_ISLE_V2_S48:
       path: level9/SNA/V2/EMERALD.SNA

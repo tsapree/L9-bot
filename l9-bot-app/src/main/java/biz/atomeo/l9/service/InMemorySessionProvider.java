@@ -27,7 +27,7 @@ public class InMemorySessionProvider implements SessionProvider {
     }
 
 
-    public List<Long> getActiveUserIds() {
+    public List<Long> getActiveChatIds() {
         return new ArrayList<>(sessions.keySet());
     }
 

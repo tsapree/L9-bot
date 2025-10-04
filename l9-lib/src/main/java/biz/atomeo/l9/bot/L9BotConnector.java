@@ -88,14 +88,12 @@ public class L9BotConnector extends L9 {
     }
 
     public boolean writeSaveFile(String path) {
-        System.out.println("presaved codeptr="+workspace.codeptr);
 
         workspace.codeptr=(short)((codeptr-acodeptr)&0xffff);
         workspace.listsize=LISTAREASIZE;
         workspace.stacksize=STACKSIZE;
         workspace.filename=LastGame;
         byte[] buff=workspace.getCloneInBytes(l9memory, listarea);
-        System.out.println("file saving: size="+buff.length+" "+buff.toString());
 
         return ioAdapter.writeSaveFile(path, buff);
     }
