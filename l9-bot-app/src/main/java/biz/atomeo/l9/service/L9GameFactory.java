@@ -26,6 +26,7 @@ import java.util.List;
 @Slf4j
 public class L9GameFactory {
     private final L9GameFilesProvider gameFilesProvider;
+    private final TgInputFileProvider tgInputFileProvider;
 
     private List<String> pictures = new ArrayList<>();
 
@@ -77,7 +78,8 @@ public class L9GameFactory {
                 public boolean isPictureCached(int pictureNumber) {
                     String picFileName = gameFilesProvider.getPicturesCacheFilename(game, pictureNumber);
                     pictures.add(picFileName);
-                    return gameFilesProvider.isFileExists(picFileName);
+                    return tgInputFileProvider.isFileCached(picFileName)
+                            || gameFilesProvider.isFileExists(picFileName);
                 }
 
                 @Override

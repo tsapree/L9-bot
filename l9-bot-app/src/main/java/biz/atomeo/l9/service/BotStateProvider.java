@@ -2,6 +2,7 @@ package biz.atomeo.l9.service;
 
 import biz.atomeo.l9.openapi.model.L9StatRs;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class BotStateProvider {
     private final LayeredSessionProvider layeredSessionProvider;
+    private final TgInputFileProvider tgInputFileProvider;
 
     private boolean enabled = false;
 
@@ -24,6 +26,11 @@ public class BotStateProvider {
         enableBot();
     }
 
+    @PreDestroy
+    private void stopped() {
+        disableBot();
+    }
+
     public boolean isBotActive() {
         return enabled;
     }
@@ -33,6 +40,7 @@ public class BotStateProvider {
 
         status = L9StatRs.BotStatusEnum.SHUTTING_DOWN;
         layeredSessionProvider.parkSessions(-1);
+        tgInputFileProvider.writeTgFileIdIndex();
         status = L9StatRs.BotStatusEnum.DISABLED;
     }
 
