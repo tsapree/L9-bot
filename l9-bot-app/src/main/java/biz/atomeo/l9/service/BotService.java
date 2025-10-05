@@ -29,15 +29,19 @@ public class BotService implements SpringLongPollingBot, LongPollingSingleThread
     private final String token;
 
     private final ChatService chatService;
+    private final TgInputFileProvider inputFileProvider;
 
     public BotService(
             @Value("${botToken}")
             String token,
-            ChatService chatService) {
+            ChatService chatService,
+            TgInputFileProvider inputFileProvider
+    ) {
         this.token = token;
-        telegramClient = new OkHttpTelegramClient(token);
-
         this.chatService = chatService;
+        this.inputFileProvider = inputFileProvider;
+
+        telegramClient = new OkHttpTelegramClient(token);
     }
 
     @Override
@@ -64,17 +68,20 @@ public class BotService implements SpringLongPollingBot, LongPollingSingleThread
             if (generatedMessage.getPicturesFilenames() != null) {
                 for (String filename : generatedMessage.getPicturesFilenames()) {
                     if (L9BotConnector.GIF_ANIMATION) {
+                        //TODO: cache animations when problem with restart gifs will solved
                         sendMsg(chatId, SendAnimation
                                 .builder()
                                 .chatId(chatId)
                                 .animation(new InputFile(new File(filename)))
                                 .build());
                     } else {
-                        sendMsg(chatId, SendPhoto
+                        InputFile file = inputFileProvider.getInputFile(filename);
+                        Message message = sendMsg(chatId, SendPhoto
                                 .builder()
                                 .chatId(chatId)
-                                .photo(new InputFile(new File(filename)))
+                                .photo(file)
                                 .build());
+                        inputFileProvider.cachePhotoFileId(file, filename, message);
                     }
                 }
             }
@@ -88,21 +95,22 @@ public class BotService implements SpringLongPollingBot, LongPollingSingleThread
         }
     }
 
-    private <T> void sendMsg(long chatId, T msg) {
+    private <T> Message sendMsg(long chatId, T msg) {
         try {
             if (msg instanceof SendAnimation) {
-                log.info("SendAnimation to chatId [{}]", chatId);
-                telegramClient.execute((SendAnimation)msg);
+                log.debug("SendAnimation to chatId [{}]", chatId);
+                return telegramClient.execute((SendAnimation)msg);
             } else if (msg instanceof SendPhoto) {
-                log.info("SendPhoto to chatId [{}]", chatId);
-                telegramClient.execute((SendPhoto)msg);
+                log.debug("SendPhoto to chatId [{}]", chatId);
+                return telegramClient.execute((SendPhoto)msg);
             } else if (msg instanceof SendMessage) {
                 log.info("SendMessage to chatId [{}]: {}", chatId, ((SendMessage) msg).getText());
-                telegramClient.execute((SendMessage)msg);
+                return telegramClient.execute((SendMessage)msg);
             }
         } catch (TelegramApiException e) {
             log.error("Error sending message", e);
         }
+        return null;
     }
 
     @AfterBotRegistration
