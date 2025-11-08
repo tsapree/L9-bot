@@ -56,10 +56,12 @@ public class L9GameFilesProvider {
                 .getPic();
     }
 
-    public String getPicturesCacheFilename(L9Game l9Game, int picNumber) {
-        String pf = picturesCacheDirectory+l9Game.getId()+"_pic"+picNumber+".gif";
-        log.debug("pic cache path {}", pf);
-        return pf;
+    public String buildPictureFilename(L9Game l9Game, int picNumber) {
+        return l9Game.getId()+"_pic"+picNumber+".gif";
+    }
+
+    public String getCachedPicturePath(String picName) {
+        return picturesCacheDirectory+picName;
     }
 
     public boolean isFileExists(String path) {

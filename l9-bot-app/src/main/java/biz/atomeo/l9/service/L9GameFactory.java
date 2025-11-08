@@ -28,7 +28,7 @@ public class L9GameFactory {
     private final L9GameFilesProvider gameFilesProvider;
     private final TgInputFileProvider tgInputFileProvider;
 
-    private List<String> pictures = new ArrayList<>();
+    private final List<String> pictures = new ArrayList<>();
 
     public void startGame(SessionDTO session, L9Game game) throws L9Exception {
         try {
@@ -76,19 +76,20 @@ public class L9GameFactory {
 
                 @Override
                 public boolean isPictureCached(int pictureNumber) {
-                    String picFileName = gameFilesProvider.getPicturesCacheFilename(game, pictureNumber);
+                    String picFileName = gameFilesProvider.buildPictureFilename(game, pictureNumber);
                     pictures.add(picFileName);
                     return tgInputFileProvider.isFileCached(picFileName)
-                            || gameFilesProvider.isFileExists(picFileName);
+                            || gameFilesProvider.isFileExists(gameFilesProvider.getCachedPicturePath(picFileName));
                 }
 
                 @Override
                 public void cachePicture(int pictureNumber, List<L9Picture> frames) {
-                    log.debug("Picture ready for save, frames count: {}", frames.size());
+                    String picName = gameFilesProvider.buildPictureFilename(game, pictureNumber);
+                    log.debug("Picture {} ready for save, frames count: {}", picName, frames.size());
                     StreamingGifWriter writer = new StreamingGifWriter(Duration.ofMillis(20), false, true);
-                    String picFileName = gameFilesProvider.getPicturesCacheFilename(game, pictureNumber);
-                    try (StreamingGifWriter.GifStream gif = writer.prepareStream(picFileName, BufferedImage.TYPE_INT_ARGB)) {
-                        FileUtils.createParentDirectories(new File(picFileName));
+                    String cachedPicFileName = gameFilesProvider.getCachedPicturePath(picName);
+                    try (StreamingGifWriter.GifStream gif = writer.prepareStream(cachedPicFileName, BufferedImage.TYPE_INT_ARGB)) {
+                        FileUtils.createParentDirectories(new File(cachedPicFileName));
                         int i = frames.size();
                         if (frames.size()>1) {
                             ImmutableImage img = null;
@@ -96,9 +97,7 @@ public class L9GameFactory {
                                 img = PicUtils.l9PictureToImmutableImage(pic);
                                 gif.writeFrame(img, Duration.ofMillis(--i == 0 ? 120000 : 20));
                             }
-                            if (frames.size() > 1) {
-                                gif.writeFrame(img, Duration.ofMillis(120000)); //try to solve problem with restart playing gifs in tg i
-                            }
+                            gif.writeFrame(img, Duration.ofMillis(120000)); //try to solve problem with restart playing gifs in tg i
                         } else if (frames.size()==1) {
                             ImmutableImage img = PicUtils.l9PictureToImmutableImage(frames.get(0)).scale(3);
                             gif.writeFrame(img);

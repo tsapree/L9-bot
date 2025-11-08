@@ -68,12 +68,12 @@ public class BotService implements SpringLongPollingBot, LongPollingSingleThread
             if (generatedMessage.getPicturesFilenames() != null) {
                 for (String filename : generatedMessage.getPicturesFilenames()) {
                     if (L9BotConnector.GIF_ANIMATION) {
-                        //TODO: cache animations when problem with restart gifs will solved
                         sendMsg(chatId, SendAnimation
                                 .builder()
                                 .chatId(chatId)
                                 .animation(new InputFile(new File(filename)))
                                 .build());
+                        //TODO: to cache animations after solving problem with restart gifs
                     } else {
                         InputFile file = inputFileProvider.getInputFile(filename);
                         Message message = sendMsg(chatId, SendPhoto
@@ -101,7 +101,7 @@ public class BotService implements SpringLongPollingBot, LongPollingSingleThread
                 log.debug("SendAnimation to chatId [{}]", chatId);
                 return telegramClient.execute((SendAnimation)msg);
             } else if (msg instanceof SendPhoto) {
-                log.debug("SendPhoto to chatId [{}]", chatId);
+                log.debug("SendPhoto to chatId [{}]: {}", chatId, ((SendPhoto) msg).getPhoto().getAttachName());
                 return telegramClient.execute((SendPhoto)msg);
             } else if (msg instanceof SendMessage) {
                 log.info("SendMessage to chatId [{}]: {}", chatId, ((SendMessage) msg).getText());
