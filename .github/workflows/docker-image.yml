@@ -28,8 +28,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: . # Path to your Dockerfile and build context
+          context: . # Path to Dockerfile and build context
           push: true
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/l9bot:latest
             ${{ vars.DOCKER_HUB_USERNAME }}/l9bot:${{ github.sha }} # Tag with commit SHA
+            ${{ vars.DOCKER_HUB_USERNAME }}/l9bot:${{ github.ref_name }}
