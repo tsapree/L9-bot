@@ -28,6 +28,9 @@ public class TgInputFileProvider {
     @Value("${picturesDir:tmp/cache/}")
     private String picturesCacheDirectory;
 
+    @Value("${sessionsDir:sessions/}")
+    private String sessionsDirectory;
+
     @PostConstruct
     public void init() {
         readTgFileIdIndex();
@@ -46,7 +49,7 @@ public class TgInputFileProvider {
         if (cache.containsKey(filename)) {
             return new InputFile(cache.get(filename));
         }
-        return new InputFile(new File(filename));
+        return new InputFile(new File(picturesCacheDirectory+filename));
     }
 
     public void cachePhotoFileId(InputFile inputFile, String filename, Message message) {
@@ -64,7 +67,7 @@ public class TgInputFileProvider {
 
     private void readTgFileIdIndex() {
         try {
-            String json = FileUtils.readFileToString(new File(String.format("%sfile_ids.json", picturesCacheDirectory)),
+            String json = FileUtils.readFileToString(new File(sessionsDirectory + "file_ids.json"),
                     "UTF-8");
             cache.putAll(objectMapper.readValue(json, HashMap.class));
         } catch (Exception e) {
@@ -75,7 +78,7 @@ public class TgInputFileProvider {
     public void writeTgFileIdIndex() {
         try {
             String json = objectMapper.writeValueAsString(cache);
-            FileUtils.writeStringToFile(new File(String.format("%sfile_ids.json", picturesCacheDirectory)),
+            FileUtils.writeStringToFile(new File(sessionsDirectory + "file_ids.json"),
                     json, "UTF-8");
         } catch (Exception e) {
             log.error("Error writing file_ids.json", e);
