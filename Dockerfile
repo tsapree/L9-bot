@@ -19,7 +19,7 @@ RUN mvn -B -e clean install -DskipTests # -o
 # prepeare runtime env
 FROM eclipse-temurin:17-jre-alpine
 
-RUN mkdir -p /tmp/cache
+RUN mkdir -p /l9bot/tmp/cache
 
 WORKDIR /opt/app
 COPY --from=BUILDER /opt/app/l9-bot-app/target/*.jar l9bot.jar
