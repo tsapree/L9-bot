@@ -1,5 +1,6 @@
 package biz.atomeo.l9.service;
 
+import biz.atomeo.l9.config.L9AppProperties;
 import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.constants.ChatState;
 import biz.atomeo.l9.dto.AnswerDTO;
@@ -8,7 +9,11 @@ import biz.atomeo.l9.error.L9Exception;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+
+import java.io.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +24,7 @@ public class ChatService {
     private final BotStateProvider botState;
     private final L9GameFactory gameFactory;
     private final L9ReplyService l9ReplyService;
+    private final L9AppProperties l9AppProperties;
 
     @Value("${l9.version}")
     private String botVersion;
@@ -54,6 +60,31 @@ public class ChatService {
                        """, botVersion) + toChooseGame(session).getAnswerText())
                         .build();
             case PLAYING_GAME:
+                if ("#about".equalsIgnoreCase(command.trim())) {
+                    return AnswerDTO.builder()
+                            .answerText("Please visit site for more information about game: "
+                                    +l9AppProperties.getGames().get(session.getGameState().getL9game().name()).about()
+                            )
+                            .build();
+                }
+                if ("#howtoplay".equalsIgnoreCase(command.trim())) {
+                    String help = null;
+                    try {
+                        InputStream resource = new ClassPathResource(
+                                "how_to_play.md").getInputStream();
+                        try (BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(resource))) {
+                            help = reader.lines()
+                                    .collect(Collectors.joining("\n"));
+
+                        }
+                    } catch (IOException e) {
+                        help = "Error reading how to play";
+                    }
+                    return AnswerDTO.builder()
+                            .answerText(help)
+                            .build();
+                }
                 AnswerDTO answerDTO = l9ReplyService.generateAnswer(session, command);
                 if (ChatState.STOPPED_GAME.equals(answerDTO.getChatState())) {
                     answerDTO.append(toChooseGame(session));
