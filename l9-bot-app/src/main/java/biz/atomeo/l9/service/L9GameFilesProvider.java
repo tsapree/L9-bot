@@ -39,21 +39,25 @@ public class L9GameFilesProvider {
     private L9AppProperties l9AppProperties;
 
     public String getGamePath(L9Game l9Game) {
-        GameInfoDTO gi = l9AppProperties.getGames().get(l9Game.name());
+        GameInfoDTO gi = getGameInfo(l9Game);
         try {
             //check that game exist in cache, if not - download and unzip it
-            checkAndPrepareGameFile(gi.getPath(), gi.getArchive(), gi.getFolder());
+            checkAndPrepareGameFile(gi.path(), gi.archive(), gi.folder());
         } catch (L9Exception e) {
             //
         }
-        return gi.getPath();
+        return gi.path();
+    }
+
+    private GameInfoDTO getGameInfo(L9Game l9Game) {
+        return l9AppProperties.getGames().get(l9Game.name());
     }
 
     public String getPicturePath(L9Game l9Game) {
         return l9AppProperties
                 .getGames()
                 .get(l9Game.name())
-                .getPic();
+                .pic();
     }
 
     public String buildPictureFilename(L9Game l9Game, int picNumber) {

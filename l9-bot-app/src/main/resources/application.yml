@@ -20,6 +20,12 @@ l9:
       archive: worm-pc.zip
       folder: worm-pc
       about: https://l9memorial.if-legends.org/html/wip.html
+    RETURN_TO_EDEN_V3_PC:
+      path: eden-pc/EDEN.DAT
+      pic: eden-pc/EDEN.CGA
+      archive: eden-pc.zip
+      folder: eden-pc
+      about: https://l9memorial.if-legends.org/html/rte.html
 
 logging:
   level:

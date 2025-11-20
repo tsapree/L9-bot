@@ -11,7 +11,6 @@ import biz.atomeo.l9.dto.SessionDTO;
 import biz.atomeo.l9.error.L9Exception;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
@@ -45,7 +44,11 @@ public class L9ReplyService {
                              L9GameState l9GameState,
                              L9GameService l9GameService) throws L9Exception {
 
-        validateCommand(userCommand);
+        if (!isValidCommand(userCommand))
+            return AnswerDTO.builder()
+                    .newChatState(ChatState.PLAYING_GAME)
+                    .answerText("Incorrect command.")
+                    .build();
 
         L9Request request = L9Request.builder()
                 .command(userCommand)
@@ -53,20 +56,15 @@ public class L9ReplyService {
 
         L9Response response = l9GameService.doStep(request, l9GameState);
 
-        if (StringUtils.isBlank(response.getMessage()))
-            throw new L9Exception("Generated empty message. Something goes wrong!");
-
         return AnswerDTO.builder()
-                .chatState(response.getPhase()!=L9Phase.STOPPED ?
+                .newChatState(response.getPhase()!=L9Phase.STOPPED ?
                         ChatState.PLAYING_GAME : ChatState.STOPPED_GAME)
                 .answerText(response.getMessage())
                 .picturesFilenames(response.getPictures())
                 .build();
     }
 
-    private void validateCommand(String command) throws L9Exception {
-        if (!USER_COMMAND_PATTERN.matcher(command).matches()) {
-            throw new L9Exception("Incorrect user command.");
-        }
+    private boolean isValidCommand(String command) {
+        return (USER_COMMAND_PATTERN.matcher(command).matches());
     }
 }

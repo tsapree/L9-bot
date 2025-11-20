@@ -2,10 +2,12 @@ package biz.atomeo.l9.utils;
 
 import biz.atomeo.l9.example.L9MiniConsoleApp;
 import biz.atomeo.l9.error.L9Exception;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -18,7 +20,6 @@ public class FileIOUtils {
     }
 
     public static void unzip(String fileZip, String destinationPath) throws IOException {
-        //String fileZip = "src/main/resources/unzipTest/compressed.zip";
         File destDir = new File(destinationPath);
 
         byte[] buffer = new byte[1024];
@@ -76,5 +77,27 @@ public class FileIOUtils {
         } catch (IOException e) {
             throw new L9Exception("Load resources error:", e);
         }
+    }
+
+    public static String loadTextFromResource(String filename) {
+        String text;
+        try {
+            InputStream resource = new ClassPathResource(
+                    filename).getInputStream();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(resource))) {
+                text = reader.lines().collect(Collectors.joining("\n"));
+
+            }
+        } catch (IOException e) {
+            text = null;
+        }
+        return text;
+    }
+
+    public static String loadTextFromResource(String filename, String defaultText) {
+        String text = loadTextFromResource(filename);
+        if (text == null) return defaultText;
+        return text;
     }
 }
