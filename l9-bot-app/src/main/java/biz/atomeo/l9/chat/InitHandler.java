@@ -13,7 +13,7 @@ public class InitHandler implements StateHandler {
     private String botVersion;
 
     @Override
-    public void onEnterState(AnswerDTO answer, SessionDTO session) {
+    public void onCommand(String question, AnswerDTO answer, SessionDTO session) {
         answer.setNewChatState(ChatState.CHOOSE_GAME);
         answer.appendText(String.format("""
                        Welcome to L9 Games Bot %s!\s
