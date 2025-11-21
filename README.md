@@ -1,6 +1,6 @@
 # L9 Games Telegram Bot
 
-https://t.me/L9Games_bot - to try when it's running (but no save ingame progress between bot restarts yet!)
+https://t.me/L9Games_bot
 
 ## Screen from Android device with Telegram:
 
