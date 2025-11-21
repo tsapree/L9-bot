@@ -11,6 +11,7 @@ import biz.atomeo.l9.service.L9ReplyService;
 import biz.atomeo.l9.utils.FileIOUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -26,9 +27,13 @@ public class ChooseGameHandler implements StateHandler {
     private final L9ReplyService l9ReplyService;
     private final L9AppProperties l9AppProperties;
 
+    @Value("${l9.version}")
+    private String botVersion;
+
     @Override
     public void onEnterState(AnswerDTO answer, SessionDTO session) {
-        answer.appendText("""
+        answer.appendText("L9 Games Bot "+botVersion+"\n\n"+
+                """
                 MENU:\s
                 [0]. How to play\s
                 \s
