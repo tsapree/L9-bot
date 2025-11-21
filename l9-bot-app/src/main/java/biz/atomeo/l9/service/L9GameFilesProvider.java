@@ -2,7 +2,7 @@ package biz.atomeo.l9.service;
 
 import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.config.L9AppProperties;
-import biz.atomeo.l9.dto.GameInfoDTO;
+import biz.atomeo.l9.dto.GameInfo;
 import biz.atomeo.l9.error.L9Exception;
 import biz.atomeo.l9.utils.FileIOUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -39,21 +39,25 @@ public class L9GameFilesProvider {
     private L9AppProperties l9AppProperties;
 
     public String getGamePath(L9Game l9Game) {
-        GameInfoDTO gi = l9AppProperties.getGames().get(l9Game.name());
+        GameInfo gi = getGameInfo(l9Game);
         try {
             //check that game exist in cache, if not - download and unzip it
-            checkAndPrepareGameFile(gi.getPath(), gi.getArchive(), gi.getFolder());
+            checkAndPrepareGameFile(gi.path(), gi.archive(), gi.folder());
         } catch (L9Exception e) {
             //
         }
-        return gi.getPath();
+        return gi.path();
+    }
+
+    private GameInfo getGameInfo(L9Game l9Game) {
+        return l9AppProperties.getGames().get(l9Game.name());
     }
 
     public String getPicturePath(L9Game l9Game) {
         return l9AppProperties
                 .getGames()
                 .get(l9Game.name())
-                .getPic();
+                .pic();
     }
 
     public String buildPictureFilename(L9Game l9Game, int picNumber) {

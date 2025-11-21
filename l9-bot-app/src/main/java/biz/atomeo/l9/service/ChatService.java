@@ -1,14 +1,15 @@
 package biz.atomeo.l9.service;
 
-import biz.atomeo.l9.constants.L9Game;
+import biz.atomeo.l9.chat.StateHandler;
 import biz.atomeo.l9.constants.ChatState;
 import biz.atomeo.l9.dto.AnswerDTO;
 import biz.atomeo.l9.dto.SessionDTO;
 import biz.atomeo.l9.error.L9Exception;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -17,11 +18,8 @@ public class ChatService {
 
     private final LayeredSessionProvider sessionProvider;
     private final BotStateProvider botState;
-    private final L9GameFactory gameFactory;
-    private final L9ReplyService l9ReplyService;
 
-    @Value("${l9.version}")
-    private String botVersion;
+    private final Map<String,StateHandler> stateHandlers;
 
     public AnswerDTO generateAnswer(Long chatId, String command) {
         if (!botState.isBotActive()) return AnswerDTO.builder()
@@ -33,6 +31,9 @@ public class ChatService {
 
             AnswerDTO response = doCommand(session, command);
 
+            if (response.getNewChatState() != null) {
+                session.setChatState(response.getNewChatState());
+            }
             sessionProvider.updateSession(chatId, session);
             return response;
         } catch (L9Exception e) {
@@ -44,56 +45,22 @@ public class ChatService {
     }
 
     private AnswerDTO doCommand(SessionDTO session, String command) {
-        switch (session.getChatState()) {
-            case INIT:
-                session.setChatState(ChatState.CHOOSE_GAME);
-                return AnswerDTO.builder()
-                        .answerText(String.format("""
-                       Welcome to L9 Games Bot v%s!\s
-                       \s
-                       """, botVersion) + toChooseGame(session).getAnswerText())
-                        .build();
-            case PLAYING_GAME:
-                AnswerDTO answerDTO = l9ReplyService.generateAnswer(session, command);
-                if (ChatState.STOPPED_GAME.equals(answerDTO.getChatState())) {
-                    answerDTO.append(toChooseGame(session));
-                }
-                return answerDTO;
-            case CHOOSE_GAME:
-            default:
-                try {
-                    return toPlayingGame(session, command);
-                } catch (L9Exception e) {
-                    return toChooseGame(session);
-                }
+        ChatState state = session.getChatState();
+        AnswerDTO answer = AnswerDTO.builder()
+                .build();
+
+        getStateHandler(state).onCommand(command, answer, session);
+
+        ChatState newState = answer.getNewChatState();
+        if (newState!=null && newState != state) {
+            getStateHandler(newState).onEnterState(answer, session);
         }
+        return answer;
     }
 
-    private AnswerDTO toChooseGame(SessionDTO session) {
-        session.setChatState(ChatState.CHOOSE_GAME);
-        return AnswerDTO.builder().answerText("""
-                Please choose game to play:\s
-                1. Emerald Isle\s
-                2. Worm in Paradise\s
-                3. Snowball\s
-                """).build();
-    }
-
-    private AnswerDTO toPlayingGame(SessionDTO session, String command) throws L9Exception{
-        switch (command) {
-            case "1":
-                gameFactory.startGame(session, L9Game.EMERALD_ISLE_V2_S48);
-                break;
-            case "2":
-                gameFactory.startGame(session, L9Game.WORM_IN_PARADISE_V3_PC);
-                break;
-            case "3":
-                gameFactory.startGame(session, L9Game.SNOWBALL_V3_PC);
-                break;
-            default:
-                throw new L9Exception("Unknown game or load error.");
-        }
-        session.setChatState(ChatState.PLAYING_GAME);
-        return l9ReplyService.generateAnswer(session, " ");
+    private StateHandler getStateHandler(ChatState state) {
+        if (state == null) state = ChatState.INIT;
+        //TODO: NPE?
+        return stateHandlers.get(state.name()+"_HANDLER");
     }
 }

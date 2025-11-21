@@ -13,11 +13,11 @@ import java.util.List;
 public class AnswerDTO {
     private List<String> picturesFilenames;
     private String answerText;
-    private ChatState chatState;
+    private ChatState newChatState;
 
     public void appendText(String text) {
         if (text!=null) {
-            answerText = answerText == null ? text : answerText + text;
+            answerText = answerText == null ? text : answerText + "\n\n" + text;
         }
     }
 
@@ -34,5 +34,6 @@ public class AnswerDTO {
     public void append(AnswerDTO anotherAnswerDTO) {
         appendText(anotherAnswerDTO.getAnswerText());
         addPictures(anotherAnswerDTO.getPicturesFilenames());
+        newChatState = anotherAnswerDTO.getNewChatState();
     }
 }

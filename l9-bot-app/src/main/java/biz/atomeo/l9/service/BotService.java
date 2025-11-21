@@ -3,6 +3,7 @@ package biz.atomeo.l9.service;
 import biz.atomeo.l9.bot.L9BotConnector;
 import biz.atomeo.l9.dto.AnswerDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -87,11 +88,13 @@ public class BotService implements SpringLongPollingBot, LongPollingSingleThread
             }
 
             //send text
-            sendMsg(chatId, SendMessage
-                    .builder()
-                    .chatId(chatId)
-                    .text(generatedMessage.getAnswerText())
-                    .build());
+            if (StringUtils.isNotBlank(generatedMessage.getAnswerText())) {
+                sendMsg(chatId, SendMessage
+                        .builder()
+                        .chatId(chatId)
+                        .text(generatedMessage.getAnswerText())
+                        .build());
+            }
         }
     }
 
@@ -104,7 +107,7 @@ public class BotService implements SpringLongPollingBot, LongPollingSingleThread
                 log.debug("SendPhoto to chatId [{}]: {}", chatId, ((SendPhoto) msg).getPhoto().getAttachName());
                 return telegramClient.execute((SendPhoto)msg);
             } else if (msg instanceof SendMessage) {
-                log.info("SendMessage to chatId [{}]: {}", chatId, ((SendMessage) msg).getText());
+                log.info("SendMessage to chatId [{}]: [{}]", chatId, ((SendMessage) msg).getText());
                 return telegramClient.execute((SendMessage)msg);
             }
         } catch (TelegramApiException e) {
