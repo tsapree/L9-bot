@@ -2,7 +2,7 @@ package biz.atomeo.l9.service;
 
 import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.config.L9AppProperties;
-import biz.atomeo.l9.dto.GameInfoDTO;
+import biz.atomeo.l9.dto.GameInfo;
 import biz.atomeo.l9.error.L9Exception;
 import biz.atomeo.l9.utils.FileIOUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class L9GameFilesProvider {
     private L9AppProperties l9AppProperties;
 
     public String getGamePath(L9Game l9Game) {
-        GameInfoDTO gi = getGameInfo(l9Game);
+        GameInfo gi = getGameInfo(l9Game);
         try {
             //check that game exist in cache, if not - download and unzip it
             checkAndPrepareGameFile(gi.path(), gi.archive(), gi.folder());
@@ -49,7 +49,7 @@ public class L9GameFilesProvider {
         return gi.path();
     }
 
-    private GameInfoDTO getGameInfo(L9Game l9Game) {
+    private GameInfo getGameInfo(L9Game l9Game) {
         return l9AppProperties.getGames().get(l9Game.name());
     }
 

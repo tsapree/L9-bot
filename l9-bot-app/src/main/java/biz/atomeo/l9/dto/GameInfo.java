@@ -1,6 +1,9 @@
 package biz.atomeo.l9.dto;
 
-public record GameInfoDTO(
+public record GameInfo(
+    String id,
+    String key,
+    String name,
     String archive,
     String folder,
     String path,

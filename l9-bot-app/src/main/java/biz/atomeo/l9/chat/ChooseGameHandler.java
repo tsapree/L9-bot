@@ -1,5 +1,6 @@
 package biz.atomeo.l9.chat;
 
+import biz.atomeo.l9.config.L9AppProperties;
 import biz.atomeo.l9.constants.ChatState;
 import biz.atomeo.l9.constants.L9Game;
 import biz.atomeo.l9.dto.AnswerDTO;
@@ -9,7 +10,13 @@ import biz.atomeo.l9.service.L9GameFactory;
 import biz.atomeo.l9.service.L9ReplyService;
 import biz.atomeo.l9.utils.FileIOUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component("CHOOSE_GAME_HANDLER")
 @RequiredArgsConstructor
@@ -17,48 +24,46 @@ public class ChooseGameHandler implements StateHandler {
 
     private final L9GameFactory gameFactory;
     private final L9ReplyService l9ReplyService;
+    private final L9AppProperties l9AppProperties;
 
     @Override
     public void onEnterState(AnswerDTO answer, SessionDTO session) {
         answer.appendText("""
                 MENU:\s
-                0. How to play\s
+                [0]. How to play\s
                 \s
-                GAMES:\s
-                Silicon Dreams Trilogy:
-                a. Snowball\s
-                b. Return to Eden\s
-                c. Worm in Paradise\s
-                \s
-                Individual games:
-                d. Emerald Isle\s
-                """);
+                GAMES:"""
+                + l9AppProperties.getCatalogue().stream()
+                .flatMap(cat -> Stream.concat(
+                            Stream.of("\n"+cat.category()+":"),
+                            cat.games().stream()
+                                    .map(game -> "["+game.key()+"]. "+game.name())
+                    )
+                ).collect(Collectors.joining("\n"))
+        );
     }
 
     @Override
     public void onCommand(String question, AnswerDTO answer, SessionDTO session) {
         try {
-            switch (question) {
-                case "0":
-                    String help = FileIOUtils.loadTextFromResource("articles/how_to_play.md", "Error reading 'how to play' article.");
-                    answer.appendText(help);
-                    onEnterState(answer,session);
-                    return;
-                case "a":
-                    gameFactory.startGame(session, L9Game.SNOWBALL_V3_PC);
-                    break;
-                case "b":
-                    gameFactory.startGame(session, L9Game.RETURN_TO_EDEN_V3_PC);
-                    break;
-                case "c":
-                    gameFactory.startGame(session, L9Game.WORM_IN_PARADISE_V3_PC);
-                    break;
-                case "d":
-                    gameFactory.startGame(session, L9Game.EMERALD_ISLE_V2_S48);
-                    break;
+            if ("0".equalsIgnoreCase(question)) {
+                String help = FileIOUtils.loadTextFromResource("articles/how_to_play.md", "Error reading 'how to play' article.");
+                answer.appendText(help);
+                onEnterState(answer, session);
+                return;
+            }
 
-                default:
-                    throw new L9Exception("Unknown game or load error.");
+            Optional<L9Game> selectedGame = l9AppProperties.getCatalogue().stream()
+                    .flatMap(cat -> cat.games().stream())
+                    .filter(game -> game.key().equals(question))
+                    .map(game -> EnumUtils.getEnum(L9Game.class, game.id()))
+                    .filter(Objects::nonNull)
+                    .findFirst();
+
+            if (selectedGame.isPresent()) {
+                gameFactory.startGame(session, selectedGame.get());
+            } else {
+                throw new L9Exception("Unknown game or load error.");
             }
             answer.setNewChatState(ChatState.PLAYING_GAME);
             answer.append(l9ReplyService.generateAnswer(session, " "));
