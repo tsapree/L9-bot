@@ -13,6 +13,7 @@ COPY --from=DEPENDENCIES /root/.m2 /root/.m2
 COPY --from=DEPENDENCIES /opt/app/ /opt/app
 COPY l9-bot-app/src /opt/app/l9-bot-app/src
 COPY l9-lib/src /opt/app/l9-lib/src
+ARG BUILD_VERSION
 
 RUN mvn -B -e clean install -DskipTests -DPROJECT_VERSION=$BUILD_VERSION # -o
 
