@@ -14,7 +14,7 @@ COPY --from=DEPENDENCIES /opt/app/ /opt/app
 COPY l9-bot-app/src /opt/app/l9-bot-app/src
 COPY l9-lib/src /opt/app/l9-lib/src
 
-RUN mvn -B -e clean install -DskipTests # -o
+RUN mvn -B -e clean install -DskipTests -DPROJECT_VERSION=$BUILD_VERSION # -o
 
 # prepeare runtime env
 FROM eclipse-temurin:17-jre-alpine

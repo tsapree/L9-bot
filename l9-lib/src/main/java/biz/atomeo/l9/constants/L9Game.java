@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum L9Game {
     //The Middle-Earth Trilogy / Jewels of Darkness
-    COLOSSAL_AVDENTURE_V3_S48("cav3s48"),
+    COLOSSAL_ADVENTURE_V3_S48("cav3s48"),
     ADVENTURE_QUEST_V3_S48("aqv4s48"),
     DUNGEON_ADVENTURE_V3_S48("dav3s48"),
 

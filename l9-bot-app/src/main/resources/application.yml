@@ -1,12 +1,12 @@
 l9:
-  version: 0.0.1
+  version: @PROJECT_VERSION@
   in-memory-cache-enabled: true
   session-cache-period-minutes: 15
 
   catalogue:
     - category: 'The Middle-Earth Trilogy / Jewels of Darkness'
       games:
-        - id: COLOSSAL_AVDENTURE_V3_S48
+        - id: COLOSSAL_ADVENTURE_V3_S48
           key: a
           name: Colossal Adventure
           path: level9/SNA/V3/COLOSSAL.SNA
